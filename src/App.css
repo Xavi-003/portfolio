@@ -6,6 +6,16 @@
   height: 40vmin;
   pointer-events: none;
 }
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensures the entire page takes up full viewport height */
+}
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
@@ -35,4 +45,70 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+
+/* Customizing Dropdown Button */
+.theme-dropdown .dropdown-toggle {
+  background-color: #007bff; /* Change to your desired color */
+  color: #fff; /* Text color */
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.theme-dropdown .dropdown-toggle:hover {
+  background-color: #0056b3; /* Darker blue for hover */
+  color: #fff;
+}
+
+/* Customizing Dropdown Items */
+.theme-dropdown .dropdown-item {
+  background-color: #343a40; /* Dark background */
+  color: #ffffff; /* White text */
+  font-size: 14px;
+}
+
+.theme-dropdown .dropdown-item:hover {
+  background-color: #495057; /* Lighter dark for hover */
+  color: #fff;
+}
+
+/* Custom Active State */
+.theme-dropdown .dropdown-item.active {
+  background-color: #007bff; /* Blue active state */
+  color: #ffffff;
+}
+
+/* Optional: Add rounded corners */
+.theme-dropdown .dropdown-menu {
+  border-radius: 8px;
+  background-color: #343a40; /* Dropdown background */
+  border: none;
+}
+
+.navbar {
+  width: 100%; /* Ensure navbar takes full width */
+}
+
+main {
+  flex-grow: 1; /* Ensures the main section takes available space */
+}
+
+footer[data-theme="dark"] {
+  background-color: #333;
+}
+
+footer[data-theme="light"] {
+  background-color: #f8f9fa;
+}
+
+footer a {
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
 }

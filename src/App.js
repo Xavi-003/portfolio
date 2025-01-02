@@ -1,24 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { ThemeProvider } from './context/ThemeContext'; // Import ThemeProvider
+import Header from './components/headers';
+import Main from './components/main';
+import SkillsSection from './components/SkillsSection';
+import Footer from './components/footer';
+import ThemeToggleButton from './components/theme'; // Theme toggle button
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider> {/* Wrapping the app with the ThemeProvider */}
+      <div className="App d-flex flex-column min-vh-100">
+        <Header />
+        <Main />
+        <SkillsSection/>
+        <Footer />
+        <ThemeToggleButton /> {/* Button to toggle theme */}
+      </div>
+    </ThemeProvider>
   );
 }
 
