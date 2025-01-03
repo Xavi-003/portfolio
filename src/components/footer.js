@@ -11,16 +11,7 @@ function Footer() {
       className={`text-center ${theme === 'dark' ? 'bg-dark text-white' : 'bg-light text-dark'}`}
     >
 
-      <p>
-        <a
-          href="https://github.com/Xavi-003"
-          className={`text-${theme === 'dark' ? 'white' : 'dark'}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <i className="fab fa-github"></i> GitHub
-        </a>
-      </p>
+
       <p>
         <i className="fas fa-copyright"></i> ©  {currentYear}
         <span className={`text-${theme === 'dark' ? 'white' : 'dark'}`}> Antony Xavier</span>

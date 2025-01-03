@@ -38,7 +38,7 @@ function SkillsSection() {
     <section
       id="skills"
       className={`py-4 ${theme === 'dark' ? 'bg-dark text-white' : 'bg-light text-dark'}`}
-      style={{ minHeight: '100vh' }} // Full height for the section
+      style={{ minHeight: '40vh' }} // Full height for the section
     >
       <h2 className="text-center mb-4">My Skills</h2>
       <div className="container-fluid px-5"> {/* Use container-fluid for full width */}

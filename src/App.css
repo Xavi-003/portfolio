@@ -1,21 +1,35 @@
-.App {
-  text-align: center;
-}
+
 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
+
+/* Reset any default margins/paddings for the Navbar and body */
 html, body {
   height: 100%;
   margin: 0;
+  padding: 0;
 }
 
 .App {
   display: flex;
   flex-direction: column;
   min-height: 100vh; /* Ensures the entire page takes up full viewport height */
+  text-align: center;
 }
+
+/* Ensure that the Navbar has no bottom margin or padding */
+.Navbar {
+  margin-bottom: 0;  /* Reset any margin below the Navbar */
+}
+
+/* Main Content Styles */
+main {
+  flex-grow: 1; /* Ensures the main section takes available space */
+  margin-top: -1px; /* Remove any additional spacing caused by border styles or navbar */
+}
+
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
@@ -23,6 +37,7 @@ html, body {
   }
 }
 
+/* Header Styles */
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -34,10 +49,7 @@ html, body {
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
+/* Logo Animation */
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -47,11 +59,16 @@ html, body {
   }
 }
 
+/* Link Styles */
+.App-link {
+  color: #61dafb;
+  text-decoration: none;
+}
 
-/* Customizing Dropdown Button */
+/* Dropdown Styles */
 .theme-dropdown .dropdown-toggle {
-  background-color: #007bff; /* Change to your desired color */
-  color: #fff; /* Text color */
+  background-color: #007bff; /* Primary color */
+  color: #fff; /* White text */
   border: none;
   padding: 10px 15px;
   border-radius: 8px;
@@ -61,10 +78,8 @@ html, body {
 
 .theme-dropdown .dropdown-toggle:hover {
   background-color: #0056b3; /* Darker blue for hover */
-  color: #fff;
 }
 
-/* Customizing Dropdown Items */
 .theme-dropdown .dropdown-item {
   background-color: #343a40; /* Dark background */
   color: #ffffff; /* White text */
@@ -73,30 +88,30 @@ html, body {
 
 .theme-dropdown .dropdown-item:hover {
   background-color: #495057; /* Lighter dark for hover */
-  color: #fff;
 }
 
-/* Custom Active State */
 .theme-dropdown .dropdown-item.active {
   background-color: #007bff; /* Blue active state */
   color: #ffffff;
 }
 
-/* Optional: Add rounded corners */
 .theme-dropdown .dropdown-menu {
   border-radius: 8px;
   background-color: #343a40; /* Dropdown background */
   border: none;
 }
 
+/* Navbar Styles */
 .navbar {
   width: 100%; /* Ensure navbar takes full width */
 }
 
+/* Main Content Styles */
 main {
   flex-grow: 1; /* Ensures the main section takes available space */
 }
 
+/* Footer Styles */
 footer[data-theme="dark"] {
   background-color: #333;
 }
@@ -111,4 +126,19 @@ footer a {
 
 footer a:hover {
   text-decoration: underline;
+}
+
+
+/* Header.js */
+header {
+  padding: 1rem 0; /* Reduced padding */
+  margin-bottom: 0; /* Removed margin-bottom */
+}
+
+/* Main.js */
+.container-fluid {
+  display: flex;
+  flex-direction: column;
+  margin: 0; 
+  min-height: 100vh; 
 }

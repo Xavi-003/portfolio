@@ -13,7 +13,7 @@ function Header() {
   return (
     <Navbar
       expand="lg"
-      className={`py-3 text-center ${theme === 'dark' ? 'bg-dark text-white' : 'bg-light text-dark'}`}
+      className={`py-12 text-center ${theme === 'dark' ? 'bg-dark text-white' : 'bg-light text-dark'}`} // Reduced padding
     >
       <Container>
         <Nav className="mx-auto" style={{ gap: "2rem" }}>
