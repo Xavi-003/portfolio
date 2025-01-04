@@ -1,144 +1,46 @@
-
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-/* Reset any default margins/paddings for the Navbar and body */
-html, body {
-  height: 100%;
+/* App.css */
+body {
   margin: 0;
-  padding: 0;
+  font-family: Arial, sans-serif;
 }
 
-.App {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh; /* Ensures the entire page takes up full viewport height */
-  text-align: center;
+.header {
+  padding: 20px;
 }
 
-/* Ensure that the Navbar has no bottom margin or padding */
-.Navbar {
-  margin-bottom: 0;  /* Reset any margin below the Navbar */
+.section {
+  padding: 40px 20px;
 }
 
-/* Main Content Styles */
-main {
-  flex-grow: 1; /* Ensures the main section takes available space */
-  margin-top: -1px; /* Remove any additional spacing caused by border styles or navbar */
+.skills-section {
+  padding: 40px 20px;
 }
 
+.skills-section .progress-bar {
+  background-color: #007bff;
+}
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+/* Responsive Fixes */
+@media (max-width: 768px) {
+  .skills-section h2 {
+    font-size: 1.5rem;
+  }
+
+  .skills-section .progress-bar {
+    height: 20px;
+  }
+
+  .contact-section {
+    padding: 20px;
   }
 }
 
-/* Header Styles */
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-/* Logo Animation */
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+@media (max-width: 576px) {
+  .header h1 {
+    font-size: 1.2rem;
   }
-  to {
-    transform: rotate(360deg);
+
+  .section {
+    padding: 20px 10px;
   }
-}
-
-/* Link Styles */
-.App-link {
-  color: #61dafb;
-  text-decoration: none;
-}
-
-/* Dropdown Styles */
-.theme-dropdown .dropdown-toggle {
-  background-color: #007bff; /* Primary color */
-  color: #fff; /* White text */
-  border: none;
-  padding: 10px 15px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.theme-dropdown .dropdown-toggle:hover {
-  background-color: #0056b3; /* Darker blue for hover */
-}
-
-.theme-dropdown .dropdown-item {
-  background-color: #343a40; /* Dark background */
-  color: #ffffff; /* White text */
-  font-size: 14px;
-}
-
-.theme-dropdown .dropdown-item:hover {
-  background-color: #495057; /* Lighter dark for hover */
-}
-
-.theme-dropdown .dropdown-item.active {
-  background-color: #007bff; /* Blue active state */
-  color: #ffffff;
-}
-
-.theme-dropdown .dropdown-menu {
-  border-radius: 8px;
-  background-color: #343a40; /* Dropdown background */
-  border: none;
-}
-
-/* Navbar Styles */
-.navbar {
-  width: 100%; /* Ensure navbar takes full width */
-}
-
-/* Main Content Styles */
-main {
-  flex-grow: 1; /* Ensures the main section takes available space */
-}
-
-/* Footer Styles */
-footer[data-theme="dark"] {
-  background-color: #333;
-}
-
-footer[data-theme="light"] {
-  background-color: #f8f9fa;
-}
-
-footer a {
-  text-decoration: none;
-}
-
-footer a:hover {
-  text-decoration: underline;
-}
-
-
-/* Header.js */
-header {
-  padding: 1rem 0; /* Reduced padding */
-  margin-bottom: 0; /* Removed margin-bottom */
-}
-
-/* Main.js */
-.container-fluid {
-  display: flex;
-  flex-direction: column;
-  margin: 0; 
-  min-height: 100vh; 
 }

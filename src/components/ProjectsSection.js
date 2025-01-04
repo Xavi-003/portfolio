@@ -34,33 +34,81 @@ function ProjectsSection() {
     <section id="projects" style={sectionStyle}>
       <Container>
         <h2 className="text-center mb-4">Projects</h2>
-        <Row className="g-4 justify-content-center">
-          {projects.map((project, index) => (
-            <Col key={index} md={4} sm={6} xs={12} className="d-flex align-items-stretch">
-              <Card
-                className="h-100 shadow border-0"
-                style={{
-                  backgroundColor: theme === "dark" ? "#495057" : "#ffffff",
-                  color: theme === "dark" ? "#f8f9fa" : "#212529",
-                }}
-              >
-                <Card.Body className="text-center d-flex flex-column">
-                  <Card.Title className="mb-2">{project.title}</Card.Title>
-                  <Card.Text>{project.description}</Card.Text>
-                  <div className="mt-auto">
-                    <a
-                      href={project.link}
-                      className="btn btn-primary"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      View Project
-                    </a>
-                  </div>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
+        <Row className="g-4">
+          <Col md={4} sm={6} xs={12} className="d-flex justify-content-start">
+            <Card
+              className="h-100 shadow border-0"
+              style={{
+                backgroundColor: theme === "dark" ? "#495057" : "#ffffff",
+                color: theme === "dark" ? "#f8f9fa" : "#212529",
+              }}
+            >
+              <Card.Body className="text-center d-flex flex-column">
+                <Card.Title className="mb-2">{projects[0].title}</Card.Title>
+                <Card.Text>{projects[0].description}</Card.Text>
+                <div className="mt-auto">
+                  <a
+                    href={projects[0].link}
+                    className="btn btn-primary"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View Project
+                  </a>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+
+          <Col md={4} sm={6} xs={12} className="d-flex justify-content-center">
+            <Card
+              className="h-100 shadow border-0"
+              style={{
+                backgroundColor: theme === "dark" ? "#495057" : "#ffffff",
+                color: theme === "dark" ? "#f8f9fa" : "#212529",
+              }}
+            >
+              <Card.Body className="text-center d-flex flex-column">
+                <Card.Title className="mb-2">{projects[1].title}</Card.Title>
+                <Card.Text>{projects[1].description}</Card.Text>
+                <div className="mt-auto">
+                  <a
+                    href={projects[1].link}
+                    className="btn btn-primary"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View Project
+                  </a>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+
+          <Col md={4} sm={6} xs={12} className="d-flex justify-content-end">
+            <Card
+              className="h-100 shadow border-0"
+              style={{
+                backgroundColor: theme === "dark" ? "#495057" : "#ffffff",
+                color: theme === "dark" ? "#f8f9fa" : "#212529",
+              }}
+            >
+              <Card.Body className="text-center d-flex flex-column">
+                <Card.Title className="mb-2">{projects[2].title}</Card.Title>
+                <Card.Text>{projects[2].description}</Card.Text>
+                <div className="mt-auto">
+                  <a
+                    href={projects[2].link}
+                    className="btn btn-primary"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View Project
+                  </a>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
         </Row>
       </Container>
     </section>
