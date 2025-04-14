@@ -10,6 +10,7 @@ import ProjectsSection from './components/ProjectsSection';
 import Footer from './components/Footer';
 import ContactSection from './components/ContactSection';
 import ThemeToggleButton from './components/ThemeToggleButton';
+import CreatureAnimation from './cursor'
 
 function App() {
   const sectionVariants = {
@@ -84,6 +85,8 @@ function App() {
             <Footer />
             <ThemeToggleButton />
           </div>
+          <CreatureAnimation />
+
         </ThemeProvider>
     </div>
   );

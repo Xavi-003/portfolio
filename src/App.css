@@ -44,3 +44,47 @@ body {
     padding: 20px 10px;
   }
 }
+
+
+/*cursor */
+
+
+:root {
+  --red: #ff0b02;
+}
+
+#creature-wrapper {
+  position: fixed;        /* Always fixed on screen */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;             /* Below app content but above background */
+  pointer-events: none;   /* Allow clicks to go through */
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#creature {
+  font-size: 0.1vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  pointer-events: auto;
+}
+
+#creature div {
+  transform-style: preserve-3d;
+  position: relative;
+  pointer-events: auto;
+  width: 2em;
+  height: 2em;
+  margin: 1em;
+  border-radius: 1em;
+  will-change: transform;
+  mix-blend-mode: plus-lighter;
+  background: var(--red);
+}
