@@ -52,7 +52,7 @@ function App() {
               <SkillsSection />
             </motion.div>
 
-            <motion.div
+            {/* <motion.div
               initial="hidden"
               whileInView="visible"
               viewport={{ amount: 0.5 }}
@@ -70,7 +70,7 @@ function App() {
               variants={sectionVariants}
             >
               <ProjectsSection />
-            </motion.div>
+            </motion.div> */}
 
             <motion.div
               initial="hidden"

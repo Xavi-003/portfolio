@@ -15,8 +15,8 @@ function ContactSection() {
   const contactDetails = [
     {
       label: "Email",
-      value: "xaviergame03@gmail.com",
-      link: "mailto:xaviergame03@gmail.com",
+      value: "xavier.developer03@gmail.com",
+      link: "mailto:xavier.developer03@gmail.com",
     },
     {
       label: "GitHub",
