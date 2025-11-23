@@ -56,40 +56,52 @@ const variants = {
 const MorphingBackground: React.FC<MorphingBackgroundProps> = ({ view }) => {
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none flex items-center justify-center bg-[#05010a]">
-        {/* Static Noise Texture */}
-        <div className="absolute inset-0 opacity-[0.05]" 
-             style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}>
-        </div>
+      {/* Static Noise Texture */}
+      <div className="absolute inset-0 opacity-[0.05]"
+        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}>
+      </div>
 
-        {/* Primary Morphing Blob */}
-        <motion.div
-            initial="hero"
-            animate={view}
-            variants={variants as any}
-            transition={{
-                duration: 2,
-                ease: [0.4, 0, 0.2, 1],
-                borderRadius: {
-                    repeat: Infinity,
-                    repeatType: "mirror",
-                    duration: 8,
-                    ease: "easeInOut"
-                }
-            }}
-            className="absolute opacity-50 mix-blend-screen"
-        />
+      {/* Primary Morphing Blob */}
+      <motion.div
+        initial="hero"
+        animate={view}
+        variants={variants as any}
+        transition={{
+          duration: 2,
+          ease: [0.4, 0, 0.2, 1],
+          borderRadius: {
+            repeat: Infinity,
+            repeatType: "mirror",
+            duration: 8,
+            ease: "easeInOut"
+          }
+        }}
+        className="absolute opacity-60 mix-blend-screen"
+      />
 
-        {/* Secondary complementary blob */}
-        <motion.div
-             animate={{
-                 x: view === 'hero' ? -100 : view === 'projects' ? -250 : 250,
-                 y: view === 'hero' ? 100 : view === 'contact' ? -150 : 50,
-                 scale: view === 'skills' ? 1.4 : 0.9,
-                 opacity: view === 'contact' ? 0.6 : 0.3,
-             }}
-             transition={{ duration: 2.5, ease: "easeInOut" }}
-             className="absolute w-[40vw] h-[40vw] bg-fuchsia-900/20 rounded-full blur-[120px] mix-blend-screen"
-        />
+      {/* Secondary complementary blob */}
+      <motion.div
+        animate={{
+          x: view === 'hero' ? -100 : view === 'projects' ? -250 : view === 'skills' ? 250 : 0,
+          y: view === 'hero' ? 100 : view === 'contact' ? -150 : view === 'skills' ? -50 : 50,
+          scale: view === 'skills' ? 1.4 : view === 'projects' ? 1.2 : 0.9,
+          opacity: view === 'hero' ? 0.3 : 0.5,
+        }}
+        transition={{ duration: 2.5, ease: "easeInOut" }}
+        className="absolute w-[40vw] h-[40vw] bg-fuchsia-900/30 rounded-full blur-[120px] mix-blend-screen"
+      />
+
+      {/* Tertiary accent blob for extra depth */}
+      <motion.div
+        animate={{
+          x: view === 'skills' ? 150 : view === 'projects' ? -150 : view === 'contact' ? 100 : 0,
+          y: view === 'skills' ? 150 : view === 'projects' ? -100 : view === 'contact' ? 50 : -100,
+          scale: view === 'projects' ? 1.3 : view === 'contact' ? 1.1 : 0.8,
+          opacity: view === 'hero' ? 0.2 : 0.4,
+        }}
+        transition={{ duration: 3, ease: "easeInOut" }}
+        className="absolute w-[35vw] h-[35vw] bg-violet-800/25 rounded-full blur-[110px] mix-blend-screen"
+      />
     </div>
   );
 };
