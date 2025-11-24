@@ -72,7 +72,7 @@ const Skills: React.FC = () => {
     const activeStep = pipelineSteps[activeStepIndex];
 
     return (
-        <section className="min-h-screen w-full flex flex-col items-center justify-center px-4 py-24 relative z-10">
+        <section className="min-h-screen lg:h-screen w-full flex flex-col items-center justify-center px-4 py-12 lg:py-16 relative z-10 overflow-x-hidden">
             {/* Background Tech Grid */}
             <div className="absolute inset-0 z-0 opacity-10"
                 style={{ backgroundImage: 'linear-gradient(#7c3aed 1px, transparent 1px), linear-gradient(90deg, #7c3aed 1px, transparent 1px)', backgroundSize: '50px 50px' }}>
@@ -96,7 +96,7 @@ const Skills: React.FC = () => {
                 </div>
 
                 {/* Pipeline Container */}
-                <div className="flex flex-col lg:flex-row items-stretch gap-8 lg:gap-4 relative">
+                <div className="flex flex-col lg:flex-row items-stretch gap-6 lg:gap-4 relative">
 
                     {/* Connecting Line (Desktop Background) */}
                     <div className="hidden lg:block absolute top-16 left-0 right-0 h-1 bg-white/5 -z-10 rounded-full overflow-hidden">
@@ -112,7 +112,7 @@ const Skills: React.FC = () => {
                         const Icon = step.icon;
 
                         return (
-                            <div key={step.id} className="flex-1 relative group">
+                            <div key={step.id} className="flex-1 relative group self-stretch h-full">
                                 {/* Mobile Connector Line */}
                                 {index !== pipelineSteps.length - 1 && (
                                     <div className="lg:hidden absolute left-8 top-20 bottom-[-2rem] w-0.5 bg-white/10 z-0" />
@@ -121,20 +121,20 @@ const Skills: React.FC = () => {
                                 {/* Node Card */}
                                 <motion.div
                                     layout
-                                    className={`relative z-10 p-1 rounded-3xl transition-all duration-500 ${isActive ? 'bg-gradient-to-br from-white/20 to-white/5 scale-105' : 'bg-transparent'}`}
+                                    className={`relative z-10 p-1 rounded-3xl transition-all duration-500 h-full ${isActive ? 'bg-gradient-to-br from-white/20 to-white/5 scale-105' : 'bg-transparent'}`}
                                 >
-                                    <div className={`relative p-6 rounded-[1.3rem] bg-[#0a0015] border transition-all duration-500 flex flex-col h-full ${isActive ? `border-${step.color.split('-')[1]}-500 shadow-[0_0_50px_-10px_rgba(0,0,0,0.5)]` : 'border-white/10 hover:border-white/20'}`}>
+                                    <div className={`relative p-4 lg:p-5 rounded-[1.3rem] bg-[#0a0015] border transition-all duration-500 flex flex-col h-full ${isActive ? `border-${step.color.split('-')[1]}-500 shadow-[0_0_50px_-10px_rgba(0,0,0,0.5)]` : 'border-white/10 hover:border-white/20'}`}>
 
                                         {/* Node Header */}
-                                        <div className="flex items-center gap-4 mb-6">
-                                            <div className={`relative w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-500 ${isActive ? `${step.color} bg-white/10 ${step.glow} shadow-lg` : 'text-gray-500 bg-white/5'}`}>
-                                                <Icon size={32} />
+                                        <div className="flex items-center gap-3 mb-4">
+                                            <div className={`relative w-12 h-12 lg:w-14 lg:h-14 rounded-2xl flex items-center justify-center transition-all duration-500 ${isActive ? `${step.color} bg-white/10 ${step.glow} shadow-lg` : 'text-gray-500 bg-white/5'}`}>
+                                                <Icon size={28} />
                                                 {isActive && (
                                                     <span className="absolute inset-0 rounded-2xl border border-current animate-ping opacity-30" />
                                                 )}
                                             </div>
                                             <div>
-                                                <h3 className={`font-display font-bold text-xl transition-colors duration-300 ${isActive ? 'text-white' : 'text-gray-400'}`}>
+                                                <h3 className={`font-display font-bold text-lg lg:text-xl transition-colors duration-300 ${isActive ? 'text-white' : 'text-gray-400'}`}>
                                                     {step.label}
                                                 </h3>
                                                 <p className="text-xs font-mono text-gray-500 uppercase tracking-wider">{step.subtext}</p>
@@ -142,7 +142,7 @@ const Skills: React.FC = () => {
                                         </div>
 
                                         {/* Tech Stack Tags */}
-                                        <div className="flex flex-wrap gap-2 mb-6">
+                                        <div className="flex flex-wrap gap-2 mb-4">
                                             {step.techs.map(tech => (
                                                 <span
                                                     key={tech}
@@ -180,7 +180,7 @@ const Skills: React.FC = () => {
 
                 {/* Live Code Terminal */}
                 <motion.div
-                    className="mt-12 w-full max-w-3xl mx-auto glass-panel rounded-2xl overflow-hidden border border-white/10 shadow-2xl"
+                    className="mt-8 lg:mt-10 w-full max-w-3xl mx-auto glass-panel rounded-2xl overflow-hidden border border-white/10 shadow-2xl"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                 >
@@ -197,7 +197,7 @@ const Skills: React.FC = () => {
                         <div className="w-12" /> {/* Spacer */}
                     </div>
 
-                    <div className="p-6 bg-[#05010a] font-mono text-sm md:text-base relative h-48 flex items-center">
+                    <div className="p-4 lg:p-6 bg-[#05010a] font-mono text-xs lg:text-sm relative h-36 lg:h-40 flex items-center">
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={activeStep.id}

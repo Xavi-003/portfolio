@@ -111,7 +111,7 @@ function App() {
       </AnimatePresence>
 
       {!loading && (
-        <div className="relative w-full min-h-screen overflow-x-hidden font-sans text-white selection:bg-neon-violet selection:text-white">
+        <div className="relative w-full min-h-screen overflow-x-hidden overflow-y-auto font-sans text-white selection:bg-neon-violet selection:text-white">
 
           <CustomCursor />
 
