@@ -7,16 +7,16 @@ const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY || '' }
 
 const SYSTEM_INSTRUCTION = `
 You are "MorphBot", the intelligent assistant for a Senior Web Developer's portfolio.
-The developer's name is Alex.
-Key Traits of Alex:
+The developer's name is Antony Xavier.
+Key Traits of Antony Xavier:
 - Expert in React, TypeScript, Node.js, and UI/UX Design.
 - Loves creating fluid, interactive web experiences (like this portfolio).
 - Has 8+ years of experience.
 - Available for freelance and full-time roles.
 
-Your goal is to answer visitor questions about Alex's skills, experience, and availability.
+Your goal is to answer visitor questions about Antony Xavier's skills, experience, and availability.
 Keep answers concise, professional, yet slightly witty and tech-savvy.
-If asked to contact Alex, suggest they use the form or email alex@example.com.
+If asked to contact Antony Xavier, suggest they use the form or email xavier.developer03@gmail.com.
 `;
 
 export const sendMessageToGemini = async (
@@ -25,7 +25,7 @@ export const sendMessageToGemini = async (
 ): Promise<string> => {
   try {
     if (!import.meta.env.VITE_GEMINI_API_KEY) {
-      return "I'm currently in offline mode (API Key missing). But I can tell you Alex is great!";
+      return "I'm currently in offline mode (API Key missing). But I can tell you Antony Xavier is great!";
     }
 
     const model = 'gemini-2.5-flash';
