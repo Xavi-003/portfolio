@@ -3,7 +3,7 @@ import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 // Initialize the AI client
 // Note: In a real production app, ensure this is handled via a backend proxy to hide keys if not using the secure user-provided flow.
 // For this demo portfolio, we assume the env var is present as per instructions.
-const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_API_KEY || '' });
+const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY || '' });
 
 const SYSTEM_INSTRUCTION = `
 You are "MorphBot", the intelligent assistant for a Senior Web Developer's portfolio.
@@ -24,7 +24,7 @@ export const sendMessageToGemini = async (
   newMessage: string
 ): Promise<string> => {
   try {
-    if (!import.meta.env.VITE_API_KEY) {
+    if (!import.meta.env.VITE_GEMINI_API_KEY) {
       return "I'm currently in offline mode (API Key missing). But I can tell you Alex is great!";
     }
 
