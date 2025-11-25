@@ -4,6 +4,7 @@ import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 // Note: In a real production app, ensure this is handled via a backend proxy to hide keys if not using the secure user-provided flow.
 // For this demo portfolio, we assume the env var is present as per instructions.
 const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY || '' });
+
 console.log("import.meta.env", import.meta.env);
 const SYSTEM_INSTRUCTION = `
 You are "MorphBot", the intelligent assistant for a Senior Web Developer's portfolio.
