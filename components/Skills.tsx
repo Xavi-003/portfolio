@@ -96,7 +96,7 @@ const Skills: React.FC = () => {
                 </div>
 
                 {/* Pipeline Container */}
-                <div className="flex flex-col lg:flex-row items-stretch gap-6 lg:gap-4 relative">
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-4 relative w-full">
 
                     {/* Connecting Line (Desktop Background) */}
                     <div className="hidden lg:block absolute top-16 left-0 right-0 h-1 bg-white/5 -z-10 rounded-full overflow-hidden">
@@ -112,7 +112,7 @@ const Skills: React.FC = () => {
                         const Icon = step.icon;
 
                         return (
-                            <div key={step.id} className="flex-1 relative group self-stretch h-full">
+                            <div key={step.id} className="relative group h-full">
                                 {/* Mobile Connector Line */}
                                 {index !== pipelineSteps.length - 1 && (
                                     <div className="lg:hidden absolute left-8 top-20 bottom-[-2rem] w-0.5 bg-white/10 z-0" />
