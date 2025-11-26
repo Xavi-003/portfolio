@@ -29,6 +29,16 @@ jobs:
       - name: Install dependencies
         run: npm install # Use 'npm install' if you don't have a package-lock.json
 
+      - name: Debug - Check env var is set
+        run: |
+          if [ -z "$VITE_GEMINI_API_KEY" ]; then
+            echo "ERROR: VITE_GEMINI_API_KEY is NOT set"
+          else
+            echo "SUCCESS: VITE_GEMINI_API_KEY is set (length: ${#VITE_GEMINI_API_KEY})"
+          fi
+        env:
+          VITE_GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
       - name: Build
         run: npm run build
         env:
