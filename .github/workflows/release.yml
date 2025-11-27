@@ -11,7 +11,7 @@ on:
 permissions:
   contents: write
   packages: write
-
+  deployments: write
 
 jobs:
   release:
@@ -55,8 +55,19 @@ jobs:
             release/*.AppImage
             release/*.deb
   
-  create-release:
+  deploy-environment:
     needs: release
+    runs-on: ubuntu-latest
+    environment:
+      name: desktop-release
+      url: https://github.com/${{ github.repository }}/releases/latest
+    
+    steps:
+      - name: Create deployment
+        run: echo "Desktop apps deployed to GitHub Releases"
+  
+  create-release:
+    needs: [release, deploy-environment]
     runs-on: ubuntu-latest
     
     steps:
