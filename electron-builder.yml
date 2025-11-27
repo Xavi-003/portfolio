@@ -1,0 +1,47 @@
+appId: com.antonyx.portfolio
+productName: Antony Xavier Portfolio
+copyright: Copyright © 2025 Antony Xavier
+
+directories:
+  buildResources: build
+  output: release
+
+files:
+  - dist/**/*
+  - electron/**/*
+  - package.json
+
+compression: maximum
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: build/icon.png
+  artifactName: ${productName}-${version}-${arch}.${ext}
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+  shortcutName: ${productName}
+
+linux:
+  target:
+    - AppImage
+    - deb
+  category: Utility
+  icon: build/icon.png
+  artifactName: ${productName}-${version}-${arch}.${ext}
+
+deb:
+  depends:
+    - gconf2
+    - gconf-service
+    - libnotify4
+    - libappindicator1
+    - libxtst6
+    - libnss3

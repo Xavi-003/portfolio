@@ -1,15 +1,33 @@
 {
   "name": "antony-xavier-portfolio",
-  "description": "portfolio",
+  "description": "Antony Xavier's Professional Portfolio - Desktop Application",
+  "author": "Antony Xavier",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "main": "electron/main.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "electron:dev": "concurrently \"vite\" \"wait-on http://localhost:3001/portfolio && electron .\"",
+    "electron:build": "vite build && electron-builder",
+    "electron:build:win": "vite build && electron-builder --win",
+    "electron:build:linux": "vite build && electron-builder --linux"
   },
   "homepage": "https://Xavi-003.github.io/portfolio",
+  "build": {
+    "appId": "com.antonyx.portfolio",
+    "productName": "Antony Xavier Portfolio",
+    "files": [
+      "dist/**/*",
+      "electron/**/*"
+    ],
+    "directories": {
+      "buildResources": "build",
+      "output": "release"
+    }
+  },
   "dependencies": {
     "@google/genai": "^1.30.0",
     "framer-motion": "^12.23.24",
@@ -21,8 +39,12 @@
   "devDependencies": {
     "@types/node": "^22.14.0",
     "@vitejs/plugin-react": "^5.0.0",
+    "concurrently": "^8.2.2",
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1",
     "typescript": "~5.8.2",
     "vite": "^6.2.0",
-    "vite-plugin-pwa": "^1.1.0"
+    "vite-plugin-pwa": "^1.1.0",
+    "wait-on": "^7.2.0"
   }
 }

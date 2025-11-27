@@ -40,7 +40,19 @@ const projects: Project[] = [
 
 // --- Optimized Animated Visual Components ---
 
+// Generate candle data once on mount, not on every render
+const useCandleData = () => {
+  return React.useMemo(() =>
+    [...Array(8)].map(() => ({
+      height: Math.random() * 60 + 20,
+      isGreen: Math.random() > 0.4
+    })),
+    []);
+};
+
 const TradingChartVisual = React.memo(() => {
+  const candles = useCandleData();
+
   return (
     <div className="w-full h-full bg-[#0a0a12] relative overflow-hidden flex flex-col p-4" style={{ willChange: 'transform' }}>
       {/* Grid Lines - Static */}
@@ -68,15 +80,13 @@ const TradingChartVisual = React.memo(() => {
 
       {/* Animated Candles - Reduced from 15 to 8 */}
       <div className="flex-1 flex items-end justify-between gap-1 relative z-10 px-2">
-        {[...Array(8)].map((_, i) => {
-          const height = Math.random() * 60 + 20;
-          const isGreen = Math.random() > 0.4;
+        {candles.map((candle, i) => {
           return (
             <motion.div
               key={i}
-              initial={{ height: `${height}%` }}
+              initial={{ height: `${candle.height}%` }}
               animate={{
-                height: [`${height}%`, `${height + (Math.random() * 20 - 10)}%`, `${height}%`],
+                height: [`${candle.height}%`, `${candle.height + 10}%`, `${candle.height - 5}%`, `${candle.height}%`],
               }}
               transition={{
                 duration: 3 + Math.random(),
@@ -85,10 +95,10 @@ const TradingChartVisual = React.memo(() => {
                 delay: i * 0.15
               }}
               className={`w-full rounded-sm relative opacity-80`}
-              style={{ backgroundColor: isGreen ? '#4ade80' : '#f87171', willChange: 'transform' }}
+              style={{ backgroundColor: candle.isGreen ? '#4ade80' : '#f87171', willChange: 'transform' }}
             >
               {/* Wick */}
-              <div className={`absolute left-1/2 -translate-x-1/2 w-[1px] bg-current h-[120%] -top-[10%] opacity-50 ${isGreen ? 'bg-green-400' : 'bg-red-400'}`} />
+              <div className={`absolute left-1/2 -translate-x-1/2 w-[1px] bg-current h-[120%] -top-[10%] opacity-50 ${candle.isGreen ? 'bg-green-400' : 'bg-red-400'}`} />
             </motion.div>
           )
         })}
@@ -101,6 +111,8 @@ const TradingChartVisual = React.memo(() => {
     </div>
   );
 });
+
+TradingChartVisual.displayName = 'TradingChartVisual';
 
 const BotVisual = React.memo(() => {
   return (
@@ -146,6 +158,8 @@ const BotVisual = React.memo(() => {
   );
 });
 
+BotVisual.displayName = 'BotVisual';
+
 // Static placeholder for side cards
 const StaticPlaceholder: React.FC<{ id: number }> = React.memo(({ id }) => {
   const placeholders = {
@@ -162,16 +176,19 @@ const StaticPlaceholder: React.FC<{ id: number }> = React.memo(({ id }) => {
   return placeholders[id as keyof typeof placeholders] || <div className="w-full h-full bg-black" />;
 });
 
+StaticPlaceholder.displayName = 'StaticPlaceholder';
+
 // --- Main Components ---
 
 interface ProjectCardProps {
   project: Project;
   onClick: () => void;
+  onCenterClick: () => void;
   isActive: boolean;
   position: 'left' | 'center' | 'right' | 'hidden';
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = React.memo(({ project, onClick, isActive, position }) => {
+const ProjectCard: React.FC<ProjectCardProps> = React.memo(({ project, onClick, onCenterClick, isActive, position }) => {
   const ref = useRef<HTMLDivElement>(null);
   const lastUpdateTime = useRef(0);
 
@@ -231,14 +248,14 @@ const ProjectCard: React.FC<ProjectCardProps> = React.memo(({ project, onClick, 
       transition={{ duration: 0.5, type: "spring", bounce: 0.15, stiffness: 200, damping: 25 }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      onClick={isActive ? onClick : undefined}
+      onClick={isActive ? onClick : onCenterClick}
       style={{
         rotateX: isActive ? rotateX : 0,
         rotateY: isActive ? rotateY : 0,
         transformStyle: "preserve-3d",
         willChange: 'transform',
       }}
-      className={`absolute top-0 w-full max-w-md cursor-pointer perspective-1000 ${isActive ? '' : 'pointer-events-none'}`}
+      className="w-full max-w-md cursor-pointer perspective-1000"
     >
       <div className="relative h-[450px] w-full rounded-3xl bg-[#0f0518] border border-white/10 overflow-hidden shadow-2xl group-hover:border-neon-violet/50 transition-colors duration-500">
 
@@ -330,6 +347,7 @@ const Projects: React.FC = () => {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [isHoveringCard, setIsHoveringCard] = useState(false);
 
   const nextSlide = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % projects.length);
@@ -341,10 +359,14 @@ const Projects: React.FC = () => {
 
   // Auto-slide logic
   useEffect(() => {
-    if (selectedId !== null || isPaused) return;
-    const interval = setInterval(nextSlide, 4000);
+    if (selectedId !== null || isPaused || isHoveringCard) return;
+
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % projects.length);
+    }, 4000);
+
     return () => clearInterval(interval);
-  }, [selectedId, isPaused, nextSlide]);
+  }, [selectedId, isPaused, isHoveringCard]);
 
   const getProjectPosition = useCallback((index: number): 'left' | 'center' | 'right' | 'hidden' => {
     if (index === currentIndex) return 'center';
@@ -376,11 +398,9 @@ const Projects: React.FC = () => {
           </motion.p>
         </div>
 
-        {/* Slider Container */}
+        {/* Slider Container - removed hover handlers from here */}
         <div
           className="relative w-full max-w-6xl flex items-center justify-center h-[500px]"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
         >
 
           <button
@@ -392,13 +412,20 @@ const Projects: React.FC = () => {
 
           <div className="relative w-full h-full flex items-center justify-center">
             {projects.map((project, index) => (
-              <ProjectCard
+              <div
                 key={project.id}
-                project={project}
-                onClick={() => setSelectedId(project.id)}
-                isActive={index === currentIndex}
-                position={getProjectPosition(index)}
-              />
+                onMouseEnter={() => setIsHoveringCard(true)}
+                onMouseLeave={() => setIsHoveringCard(false)}
+                className="absolute inset-0 flex items-center justify-center"
+              >
+                <ProjectCard
+                  project={project}
+                  onClick={() => setSelectedId(project.id)}
+                  onCenterClick={() => setCurrentIndex(index)}
+                  isActive={index === currentIndex}
+                  position={getProjectPosition(index)}
+                />
+              </div>
             ))}
           </div>
 
@@ -516,14 +543,14 @@ const Projects: React.FC = () => {
                     </motion.div>
 
                     {/* Content Section */}
-                    <motion.div
+                    < motion.div
                       className="lg:w-5/12 p-8 md:p-12 overflow-y-auto custom-scrollbar flex flex-col relative bg-[#0f0518]"
                       variants={containerVariants}
                       initial="hidden"
                       animate="visible"
                     >
                       {/* Category Badge */}
-                      <motion.div
+                      < motion.div
                         className="flex items-center gap-3 mb-8"
                         variants={itemVariants}
                       >
@@ -591,10 +618,10 @@ const Projects: React.FC = () => {
                 );
               })()}
             </motion.div>
-          </div>
+          </div >
         )}
-      </AnimatePresence>
-    </section>
+      </AnimatePresence >
+    </section >
   );
 };
 
