@@ -1,6 +1,23 @@
 # Antony - Next Gen Portfolio
 
+[![Deploy](https://github.com/Xavi-003/portfolio/actions/workflows/deploy.yml/badge.svg)](https://github.com/Xavi-003/portfolio/actions/workflows/deploy.yml)
+[![Release](https://github.com/Xavi-003/portfolio/actions/workflows/release.yml/badge.svg)](https://github.com/Xavi-003/portfolio/actions/workflows/release.yml)
+[![GitHub release](https://img.shields.io/github/v/release/Xavi-003/portfolio?include_prereleases)](https://github.com/Xavi-003/portfolio/releases)
+[![Live Demo](https://img.shields.io/badge/demo-live-success)](https://Xavi-003.github.io/portfolio/)
+
 A visually stunning, interactive web developer portfolio featuring state-based morphing animations and a Gemini-powered AI assistant.
+
+## 📥 Download Desktop App
+
+Get the native desktop application for your platform:
+
+[![Download for Windows](https://img.shields.io/badge/Windows-Download-blue?logo=windows)](https://github.com/Xavi-003/portfolio/releases/latest)
+[![Download for Linux](https://img.shields.io/badge/Linux-Download-orange?logo=linux)](https://github.com/Xavi-003/portfolio/releases/latest)
+
+**Available formats:**
+- Windows: `.exe` installer
+- Linux: `.AppImage` (portable) or `.deb` (Debian/Ubuntu)
+
 
 ## Features
 
