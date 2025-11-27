@@ -60,7 +60,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: desktop-release
-      url: https://github.com/${{ github.repository }}/releases/latest
+      url: https://xavi-003.github.io/portfolio/download.html
     
     steps:
       - name: Create deployment

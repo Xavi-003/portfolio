@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Antony Xavier Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .downloads {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .download-btn.windows {
+            background: linear-gradient(135deg, #0078d4 0%, #0053a6 100%);
+            color: white;
+        }
+
+        .download-btn.linux {
+            background: linear-gradient(135deg, #FCC624 0%, #FF9800 100%);
+            color: #333;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .recommended {
+            position: relative;
+        }
+
+        .recommended::before {
+            content: '⭐ Recommended';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #4ade80;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .other-options {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .other-options a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .other-options a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>📥 Download Portfolio App</h1>
+        <p id="platform-text">Choose your platform</p>
+
+        <div class="downloads" id="downloads">
+            <!-- Buttons will be inserted here -->
+        </div>
+
+        <div class="other-options">
+            <p>Need a different version? <a href="https://github.com/Xavi-003/portfolio/releases/latest"
+                    target="_blank">View all releases</a></p>
+            <p style="margin-top: 10px;"><a href="https://Xavi-003.github.io/portfolio/" target="_blank">Or try the web
+                    version →</a></p>
+        </div>
+    </div>
+
+    <script>
+        const REPO = 'Xavi-003/portfolio';
+        const API_URL = `https://api.github.com/repos/${REPO}/releases/latest`;
+
+        // Detect OS
+        function detectOS() {
+            const userAgent = window.navigator.userAgent.toLowerCase();
+            if (userAgent.includes('win')) return 'windows';
+            if (userAgent.includes('linux')) return 'linux';
+            return 'unknown';
+        }
+
+        // Fetch latest release
+        async function loadDownloads() {
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                const assets = data.assets;
+
+                const detectedOS = detectOS();
+                const downloadContainer = document.getElementById('downloads');
+                const platformText = document.getElementById('platform-text');
+
+                // Find assets
+                const windowsExe = assets.find(a => a.name.endsWith('.exe'));
+                const linuxAppImage = assets.find(a => a.name.endsWith('.AppImage'));
+                const linuxDeb = assets.find(a => a.name.endsWith('.deb'));
+
+                // Update platform text
+                if (detectedOS === 'windows') {
+                    platformText.textContent = 'Windows detected - Download ready!';
+                } else if (detectedOS === 'linux') {
+                    platformText.textContent = 'Linux detected - Choose your format';
+                } else {
+                    platformText.textContent = 'Choose your platform';
+                }
+
+                // Create download buttons
+                let buttons = '';
+
+                if (windowsExe) {
+                    const recommended = detectedOS === 'windows' ? 'recommended' : '';
+                    buttons += `
+                        <a href="${windowsExe.browser_download_url}" 
+                           class="download-btn windows ${recommended}"
+                           download="${windowsExe.name}">
+                            <svg class="icon" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M3 12V6.75l6-1.32v6.48L3 12zm17-9v8.75l-10 .15V5.21L20 3zM3 13l6 .09v6.81l-6-1.15V13zm17 .25V22l-10-1.91V13.1l10 .15z"/>
+                            </svg>
+                            Windows Installer
+                            <span style="font-size: 12px; opacity: 0.8;">(${(windowsExe.size / 1024 / 1024).toFixed(1)} MB)</span>
+                        </a>
+                    `;
+                }
+
+                if (linuxAppImage) {
+                    const recommended = detectedOS === 'linux' ? 'recommended' : '';
+                    buttons += `
+                        <a href="${linuxAppImage.browser_download_url}" 
+                           class="download-btn linux ${recommended}"
+                           download="${linuxAppImage.name}">
+                            <svg class="icon" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                            </svg>
+                            Linux AppImage (Portable)
+                            <span style="font-size: 12px; opacity: 0.8;">(${(linuxAppImage.size / 1024 / 1024).toFixed(1)} MB)</span>
+                        </a>
+                    `;
+                }
+
+                if (linuxDeb) {
+                    buttons += `
+                        <a href="${linuxDeb.browser_download_url}" 
+                           class="download-btn linux"
+                           download="${linuxDeb.name}">
+                            <svg class="icon" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                            </svg>
+                            Linux .deb (Debian/Ubuntu)
+                            <span style="font-size: 12px; opacity: 0.8;">(${(linuxDeb.size / 1024 / 1024).toFixed(1)} MB)</span>
+                        </a>
+                    `;
+                }
+
+                downloadContainer.innerHTML = buttons;
+
+            } catch (error) {
+                console.error('Error loading downloads:', error);
+                document.getElementById('downloads').innerHTML = `
+                    <p style="color: #e74c3c;">Unable to load downloads. Please visit 
+                    <a href="https://github.com/${REPO}/releases/latest">GitHub Releases</a></p>
+                `;
+            }
+        }
+
+        loadDownloads();
+    </script>
+</body>
+
+</html>
