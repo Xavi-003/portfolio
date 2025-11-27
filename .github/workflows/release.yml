@@ -62,15 +62,23 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       
-      - name: Generate version
+      - name: Generate version and create tag
         id: version
         run: |
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             VERSION=${GITHUB_REF#refs/tags/}
+            echo "Using existing tag: $VERSION"
           else
             SHORT_SHA=$(git rev-parse --short HEAD)
             VERSION="v1.0.0-${SHORT_SHA}"
+            echo "Creating new tag: $VERSION"
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git tag -a "$VERSION" -m "Auto-release from commit ${GITHUB_SHA}"
+            git push origin "$VERSION"
           fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Release version: $VERSION"
@@ -80,28 +88,34 @@ jobs:
         with:
           path: artifacts
       
+      - name: Display downloaded files
+        run: |
+          echo "Downloaded artifacts:"
+          ls -R artifacts/
+      
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: ${{ steps.version.outputs.version }}
+          tag: ${{ steps.version.outputs.version }}
           name: Desktop App ${{ steps.version.outputs.version }}
           body: |
-            ## Desktop Application Release
+            ## 🖥️ Desktop Application Release
             
-            Auto-generated from commit: ${{ github.sha }}
+            **Auto-generated from commit:** `${{ github.sha }}`
             
-            ### Downloads
-            - Windows Installer (.exe)
-            - Linux AppImage (portable)
-            - Linux Debian Package (.deb)
+            ### 📥 Downloads
+            - **Windows**: `.exe` installer
+            - **Linux AppImage**: Portable application
+            - **Linux Debian**: `.deb` package
             
-            ### Changes
+            ### 📝 Changes
             ${{ github.event.head_commit.message }}
-          files: |
-            artifacts/windows-installers/*
-            artifacts/linux-installers/*
+            
+            ---
+            
+            **Full Changelog**: https://github.com/${{ github.repository }}/compare/${{ steps.version.outputs.version }}
+          artifacts: "artifacts/windows-installers/*,artifacts/linux-installers/*"
           draft: false
           prerelease: ${{ !startsWith(github.ref, 'refs/tags/v') }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
