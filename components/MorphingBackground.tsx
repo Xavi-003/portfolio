@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { ViewState } from '../types';
 
@@ -6,54 +6,60 @@ interface MorphingBackgroundProps {
   view: ViewState;
 }
 
-const variants = {
-  hero: {
-    scale: 1,
-    rotate: 0,
-    borderRadius: ["60% 40% 30% 70% / 60% 30% 70% 40%", "30% 60% 70% 40% / 50% 60% 30% 60%"],
-    backgroundColor: "#581c87", // Purple 900
-    x: 0,
-    y: 0,
-    width: '45vw',
-    height: '45vw',
-    filter: "blur(90px)",
-  },
-  projects: {
-    scale: 1.2,
-    rotate: 45,
-    borderRadius: "20%",
-    backgroundColor: "#701a75", // Fuchsia 900
-    x: '30vw',
-    y: '-15vh',
-    width: '35vw',
-    height: '65vh',
-    filter: "blur(80px)",
-  },
-  skills: {
-    scale: 1.1,
-    rotate: 180,
-    borderRadius: "50%",
-    backgroundColor: "#4c1d95", // Violet 900
-    x: '-25vw',
-    y: '15vh',
-    width: '55vw',
-    height: '55vw',
-    filter: "blur(100px)",
-  },
-  contact: {
-    scale: 0.9,
-    rotate: -15,
-    borderRadius: ["40% 60% 60% 40% / 40% 40% 60% 60%"],
-    backgroundColor: "#6b21a8", // Purple 800
-    x: 0,
-    y: '20vh',
-    width: '85vw',
-    height: '35vh',
-    filter: "blur(80px)",
-  }
-};
-
 const MorphingBackground: React.FC<MorphingBackgroundProps> = ({ view }) => {
+  // Check for mobile to reduce blur load
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const blurAmount = isMobile ? "45px" : "90px";
+  const secondaryBlur = isMobile ? "blur-[60px]" : "blur-[120px]";
+  const tertiaryBlur = isMobile ? "blur-[55px]" : "blur-[110px]";
+
+  const variants = useMemo(() => ({
+    hero: {
+      scale: 1,
+      rotate: 0,
+      borderRadius: ["60% 40% 30% 70% / 60% 30% 70% 40%", "30% 60% 70% 40% / 50% 60% 30% 60%"],
+      backgroundColor: "#581c87", // Purple 900
+      x: 0,
+      y: 0,
+      width: '45vw',
+      height: '45vw',
+      filter: `blur(${blurAmount})`,
+    },
+    projects: {
+      scale: 1.2,
+      rotate: 45,
+      borderRadius: "20%",
+      backgroundColor: "#701a75", // Fuchsia 900
+      x: '30vw',
+      y: '-15vh',
+      width: '35vw',
+      height: '65vh',
+      filter: `blur(${isMobile ? "40px" : "80px"})`,
+    },
+    skills: {
+      scale: 1.1,
+      rotate: 180,
+      borderRadius: "50%",
+      backgroundColor: "#4c1d95", // Violet 900
+      x: '-25vw',
+      y: '15vh',
+      width: '55vw',
+      height: '55vw',
+      filter: `blur(${isMobile ? "50px" : "100px"})`,
+    },
+    contact: {
+      scale: 0.9,
+      rotate: -15,
+      borderRadius: ["40% 60% 60% 40% / 40% 40% 60% 60%"],
+      backgroundColor: "#6b21a8", // Purple 800
+      x: 0,
+      y: '20vh',
+      width: '85vw',
+      height: '35vh',
+      filter: `blur(${isMobile ? "40px" : "80px"})`,
+    }
+  }), [blurAmount, isMobile]);
+
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none flex items-center justify-center bg-[#05010a]">
       {/* Static Noise Texture */}
@@ -66,6 +72,7 @@ const MorphingBackground: React.FC<MorphingBackgroundProps> = ({ view }) => {
         initial="hero"
         animate={view}
         variants={variants as any}
+        style={{ willChange: 'transform' }}
         transition={{
           duration: 2,
           ease: [0.4, 0, 0.2, 1],
@@ -87,8 +94,9 @@ const MorphingBackground: React.FC<MorphingBackgroundProps> = ({ view }) => {
           scale: view === 'skills' ? 1.4 : view === 'projects' ? 1.2 : 0.9,
           opacity: view === 'hero' ? 0.3 : 0.5,
         }}
+        style={{ willChange: 'transform' }}
         transition={{ duration: 2.5, ease: "easeInOut" }}
-        className="absolute w-[40vw] h-[40vw] bg-fuchsia-900/30 rounded-full blur-[120px] mix-blend-screen"
+        className={`absolute w-[40vw] h-[40vw] bg-fuchsia-900/30 rounded-full ${secondaryBlur} mix-blend-screen`}
       />
 
       {/* Tertiary accent blob for extra depth */}
@@ -99,8 +107,9 @@ const MorphingBackground: React.FC<MorphingBackgroundProps> = ({ view }) => {
           scale: view === 'projects' ? 1.3 : view === 'contact' ? 1.1 : 0.8,
           opacity: view === 'hero' ? 0.2 : 0.4,
         }}
+        style={{ willChange: 'transform' }}
         transition={{ duration: 3, ease: "easeInOut" }}
-        className="absolute w-[35vw] h-[35vw] bg-violet-800/25 rounded-full blur-[110px] mix-blend-screen"
+        className={`absolute w-[35vw] h-[35vw] bg-violet-800/25 rounded-full ${tertiaryBlur} mix-blend-screen`}
       />
     </div>
   );

@@ -238,7 +238,7 @@ const ProjectCard: React.FC<ProjectCardProps> = React.memo(({ project, onClick, 
         transformStyle: "preserve-3d",
         willChange: 'transform',
       }}
-      className={`absolute top-0 w-full max-w-md cursor-pointer perspective-1000 ${isActive ? '' : 'pointer-events-none'}`}
+      className={`absolute top-0 w-full max-w-[90vw] md:max-w-md cursor-pointer perspective-1000 ${isActive ? '' : 'pointer-events-none'}`}
     >
       <div className="relative h-[450px] w-full rounded-3xl bg-[#0f0518] border border-white/10 overflow-hidden shadow-2xl group-hover:border-neon-violet/50 transition-colors duration-500">
 
