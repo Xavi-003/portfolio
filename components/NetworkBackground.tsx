@@ -41,10 +41,9 @@ const NetworkBackground: React.FC = () => {
 
     let width = canvas.width = window.innerWidth;
     let height = canvas.height = window.innerHeight;
-    const isMobile = window.innerWidth < 768;
 
     // Configuration
-    const NODE_COUNT = isMobile ? 6 : 12;
+    const NODE_COUNT = window.innerWidth < 768 ? 6 : 12;
     const CONNECTION_DIST = Math.min(width, height) * 0.35;
     
     // State
@@ -171,8 +170,6 @@ const NetworkBackground: React.FC = () => {
 
     // Animation Loop
     let lastTime = 0;
-    let animationFrameId: number;
-
     const render = (time: number) => {
         const dt = time - lastTime;
         lastTime = time;
@@ -239,14 +236,10 @@ const NetworkBackground: React.FC = () => {
 
             // Draw Packet (Square data block)
             ctx.fillStyle = p.color;
-            if (!isMobile) {
-                ctx.shadowBlur = 8;
-                ctx.shadowColor = p.color;
-            }
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = p.color;
             ctx.fillRect(currX - 4, currY - 4, 8, 8);
-            if (!isMobile) {
-                ctx.shadowBlur = 0;
-            }
+            ctx.shadowBlur = 0;
 
             // Reach Destination
             if (p.progress >= 1) {
@@ -318,10 +311,10 @@ const NetworkBackground: React.FC = () => {
             ctx.globalAlpha = 1;
         }
 
-        animationFrameId = requestAnimationFrame(render);
+        requestAnimationFrame(render);
     };
 
-    animationFrameId = requestAnimationFrame(render);
+    requestAnimationFrame(render);
 
     const handleResize = () => {
         width = canvas.width = window.innerWidth;
@@ -329,10 +322,7 @@ const NetworkBackground: React.FC = () => {
     };
 
     window.addEventListener('resize', handleResize);
-    return () => {
-        window.removeEventListener('resize', handleResize);
-        cancelAnimationFrame(animationFrameId);
-    };
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   return (

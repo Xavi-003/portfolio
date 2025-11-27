@@ -6,8 +6,7 @@ const CustomCursor: React.FC = () => {
   const cursorY = useMotionValue(-100);
 
   // Smooth spring animation for the cursor
-  // Adjusted for snappier feel (higher stiffness, adjusted damping)
-  const springConfig = { damping: 35, stiffness: 1000 };
+  const springConfig = { damping: 25, stiffness: 700 };
   const cursorXSpring = useSpring(cursorX, springConfig);
   const cursorYSpring = useSpring(cursorY, springConfig);
 

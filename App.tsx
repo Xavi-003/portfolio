@@ -8,7 +8,7 @@ import Projects from './components/Projects';
 import Skills from './components/Skills';
 import AIChat from './components/AIChat';
 import CustomCursor from './components/CustomCursor';
-import { Cpu } from 'lucide-react';
+import { Database, Server, Shield, Zap, Cpu } from 'lucide-react';
 import ErrorBoundary from './components/ErrorBoundary';
 import { InstallPWA } from './components/InstallPWA';
 
