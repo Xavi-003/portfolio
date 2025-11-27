@@ -191,8 +191,8 @@ function App() {
 
           {/* Social Links (Fixed) */}
           <div className="fixed top-6 right-6 z-50 flex gap-6 mix-blend-exclusion text-sm font-mono opacity-70">
-            <a href="#" className="hover:text-neon-violet transition-colors">[LINKEDIN]</a>
-            <a href="#" className="hover:text-neon-fuchsia transition-colors">[GITHUB]</a>
+            <a href="https://www.linkedin.com/in/antony-xavier-4b5019333/" target="_blank" rel="noopener noreferrer" className="hover:text-neon-violet transition-colors">[LINKEDIN]</a>
+            <a href="https://github.com/Xavi-003/" target="_blank" rel="noopener noreferrer" className="hover:text-neon-fuchsia transition-colors">[GITHUB]</a>
           </div>
         </div>
       )}
