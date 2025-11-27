@@ -2,8 +2,11 @@ name: Build and Release Desktop Apps
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v*'
+  workflow_dispatch:
 
 jobs:
   release:
@@ -55,6 +58,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
+      - name: Generate version
+        id: version
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/}
+          else
+            SHORT_SHA=$(git rev-parse --short HEAD)
+            VERSION="v1.0.0-${SHORT_SHA}"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Release version: $VERSION"
+      
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
@@ -63,11 +78,25 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: Desktop App ${{ steps.version.outputs.version }}
+          body: |
+            ## Desktop Application Release
+            
+            Auto-generated from commit: ${{ github.sha }}
+            
+            ### Downloads
+            - Windows Installer (.exe)
+            - Linux AppImage (portable)
+            - Linux Debian Package (.deb)
+            
+            ### Changes
+            ${{ github.event.head_commit.message }}
           files: |
             artifacts/windows-installers/*
             artifacts/linux-installers/*
           draft: false
-          prerelease: false
-          generate_release_notes: true
+          prerelease: ${{ !startsWith(github.ref, 'refs/tags/v') }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
