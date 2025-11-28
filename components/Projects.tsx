@@ -28,13 +28,14 @@ const projects: Project[] = [
     description: "Advanced trading bot supporting Grid, DCA (Dollar Cost Averaging), and Arbitrage strategies. Features backtesting engine and real-time performance monitoring.",
     tech: ["Python", "FastAPI", "Docker", "Redis"]
   },
+
   {
-    id: 4,
-    title: "PayBridge Global",
-    category: "FinTech / Payments",
-    image: "https://picsum.photos/800/600?random=104",
-    description: "Unified payment gateway solution integrating both traditional fiat processors and cryptocurrency payments. Secure, compliant, and developer-friendly API.",
-    tech: ["Node.js", "Stripe API", "Blockchain", "Solidity"]
+    id: 5,
+    title: "Mini Games Arcade",
+    category: "Web App / Gaming",
+    image: "", // Custom visual
+    description: "A collection of classic mini-games including Tic-Tac-Toe, Snake, and Memory Match. Built with React and PWA support for offline play.",
+    tech: ["React", "Vite", "PWA", "Tailwind CSS"]
   }
 ];
 
@@ -160,6 +161,67 @@ const BotVisual = React.memo(() => {
 
 BotVisual.displayName = 'BotVisual';
 
+const GameVisual = React.memo(() => {
+  // Tic-Tac-Toe Grid State Animation
+  const [board, setBoard] = useState(Array(9).fill(null));
+
+  useEffect(() => {
+    let currentIndex = 0;
+    const moves = [0, 4, 1, 2, 8, 5, 3, 6, 7]; // Sequence of moves
+    const symbols = ['X', 'O', 'X', 'O', 'X', 'O', 'X', 'O', 'X']; // Alternating symbols
+
+    const interval = setInterval(() => {
+      setBoard(prev => {
+        const newBoard = [...prev];
+        // Reset if full
+        if (currentIndex >= moves.length) {
+          currentIndex = 0;
+          return Array(9).fill(null);
+        }
+
+        newBoard[moves[currentIndex]] = symbols[currentIndex];
+        currentIndex++;
+        return newBoard;
+      });
+    }, 800);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="w-full h-full bg-[#0f172a] relative overflow-hidden flex items-center justify-center font-mono" style={{ willChange: 'transform' }}>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emerald-900/20 via-transparent to-transparent" />
+
+      {/* Game Board */}
+      <div className="relative z-10 grid grid-cols-3 gap-2 p-4 bg-white/5 rounded-xl backdrop-blur-sm border border-white/10">
+        {board.map((cell, i) => (
+          <motion.div
+            key={i}
+            className={`w-12 h-12 flex items-center justify-center text-2xl font-bold rounded-md bg-black/40 border border-white/5 ${cell === 'X' ? 'text-neon-fuchsia' : cell === 'O' ? 'text-neon-violet' : ''
+              }`}
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: cell ? 1 : 0.8, opacity: cell ? 1 : 0.2 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          >
+            {cell}
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Floating Elements */}
+      <motion.div
+        className="absolute top-10 right-10 text-emerald-400/20"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+      >
+        <Layers size={64} />
+      </motion.div>
+    </div>
+  );
+});
+
+GameVisual.displayName = 'GameVisual';
+
 // Static placeholder for side cards
 const StaticPlaceholder: React.FC<{ id: number }> = React.memo(({ id }) => {
   const placeholders = {
@@ -170,7 +232,7 @@ const StaticPlaceholder: React.FC<{ id: number }> = React.memo(({ id }) => {
     3: <div className="w-full h-full bg-gradient-to-br from-blue-900/30 to-cyan-900/30 flex items-center justify-center">
       <div className="text-white/50 font-mono text-sm">BOT</div>
     </div>,
-    4: <div className="w-full h-full bg-gradient-to-br from-indigo-900/30 to-pink-900/30" />
+
   };
 
   return placeholders[id as keyof typeof placeholders] || <div className="w-full h-full bg-black" />;
@@ -281,6 +343,8 @@ const ProjectCard: React.FC<ProjectCardProps> = React.memo(({ project, onClick, 
               <TradingChartVisual />
             ) : project.id === 3 ? (
               <BotVisual />
+            ) : project.id === 5 ? (
+              <GameVisual />
             ) : (
               <motion.img
                 src={project.image}
@@ -531,6 +595,8 @@ const Projects: React.FC = () => {
                           <TradingChartVisual />
                         ) : project.id === 3 ? (
                           <BotVisual />
+                        ) : project.id === 5 ? (
+                          <GameVisual />
                         ) : (
                           <img
                             src={project.image}
@@ -606,10 +672,10 @@ const Projects: React.FC = () => {
                         className="flex flex-col sm:flex-row gap-4 mt-auto"
                         variants={itemVariants}
                       >
-                        <a href="#" className="flex-1 py-4 bg-white text-black rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-neon-purple hover:text-white transition-all shadow-lg hover:shadow-neon-purple/30 group relative overflow-hidden">
+                        <a href={project.id === 5 ? "https://xavi-003.github.io/mini_game/" : "#"} target={project.id === 5 ? "_blank" : "_self"} rel={project.id === 5 ? "noopener noreferrer" : ""} className="flex-1 py-4 bg-white text-black rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-neon-purple hover:text-white transition-all shadow-lg hover:shadow-neon-purple/30 group relative overflow-hidden">
                           <span className="relative z-10 flex items-center gap-2"><ExternalLink size={20} className="group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" /> Live Demo</span>
                         </a>
-                        <a href="#" className="flex-1 py-4 border border-white/20 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-white/10 transition-colors text-white hover:border-white/40">
+                        <a href={project.id === 5 ? "https://github.com/Xavi-003/mini_game" : "#"} target={project.id === 5 ? "_blank" : "_self"} rel={project.id === 5 ? "noopener noreferrer" : ""} className="flex-1 py-4 border border-white/20 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-white/10 transition-colors text-white hover:border-white/40">
                           <Github size={20} /> Codebase
                         </a>
                       </motion.div>

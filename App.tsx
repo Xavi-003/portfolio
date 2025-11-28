@@ -8,7 +8,7 @@ import Projects from './components/Projects';
 import Skills from './components/Skills';
 import AIChat from './components/AIChat';
 import CustomCursor from './components/CustomCursor';
-import { Database, Server, Shield, Zap, Cpu } from 'lucide-react';
+import { Database, Server, Shield, Zap, Cpu, MessageCircle, Gamepad2 } from 'lucide-react';
 import ErrorBoundary from './components/ErrorBoundary';
 import { InstallPWA } from './components/InstallPWA';
 
@@ -183,7 +183,10 @@ function App() {
           <Navigation currentView={view} onChangeView={setView} />
 
           {/* Logo / Branding (Fixed) */}
-          <div className="fixed top-6 left-6 z-50 mix-blend-exclusion">
+          <div
+            className="fixed top-6 left-6 z-50 mix-blend-exclusion cursor-pointer"
+            onClick={() => setView('hero')}
+          >
             <span className="font-display font-bold text-xl tracking-tighter text-white">
               Antony Xavier<span className="text-neon-fuchsia">.DEV</span>
             </span>
@@ -194,6 +197,48 @@ function App() {
             <a href="https://www.linkedin.com/in/antony-xavier-4b5019333/" target="_blank" rel="noopener noreferrer" className="hover:text-neon-violet transition-colors">[LINKEDIN]</a>
             <a href="https://github.com/Xavi-003/" target="_blank" rel="noopener noreferrer" className="hover:text-neon-fuchsia transition-colors">[GITHUB]</a>
           </div>
+
+          {/* Game Project Trigger */}
+          <motion.button
+            onClick={() => window.open('https://xavi-003.github.io/mini_game/', '_blank')}
+            className="fixed bottom-6 right-24 z-50 p-3 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 text-white hover:bg-neon-fuchsia hover:border-neon-fuchsia transition-all duration-300 group shadow-lg shadow-neon-fuchsia/10"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 1.1 }}
+          >
+            <motion.div
+              animate={{ rotate: [0, 15, -15, 0] }}
+              transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 1, ease: "easeInOut" }}
+            >
+              <Gamepad2 size={24} />
+            </motion.div>
+          </motion.button>
+
+          {/* Chat Trigger (Fixed Bottom Right) - Hide on Contact page */}
+          <AnimatePresence>
+            {view !== 'contact' && (
+              <motion.button
+                key="chat-trigger"
+                onClick={() => setView('contact')}
+                className="fixed bottom-6 right-6 z-50 p-3 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 text-white hover:bg-neon-violet hover:border-neon-violet transition-all duration-300 group shadow-lg shadow-neon-violet/10"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                initial={{ opacity: 0, x: 20, scale: 0 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, scale: 0, transition: { duration: 0.3 } }}
+                transition={{ delay: 1 }}
+              >
+                <motion.div
+                  animate={{ y: [0, -4, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <MessageCircle size={24} />
+                </motion.div>
+              </motion.button>
+            )}
+          </AnimatePresence>
         </div>
       )}
     </>
