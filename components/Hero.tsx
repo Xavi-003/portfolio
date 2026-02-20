@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Terminal } from 'lucide-react';
+import { ArrowRight, Terminal, FileText } from 'lucide-react';
 import { ViewState } from '../types';
 import NetworkBackground from './NetworkBackground';
 
@@ -61,6 +61,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
           <h1 className="text-5xl md:text-8xl font-display font-bold leading-tight tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-purple-200 flex items-center drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">
             {text}
             <motion.span
+              aria-hidden="true"
               animate={{ opacity: [1, 0] }}
               transition={{
                 duration: 0.8,
@@ -105,6 +106,15 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
             <Terminal size={18} />
             <span>Execute Protocol</span>
           </button>
+
+          <a
+            href="/portfolio/resume.pdf"
+            download="Antony_Xavier_Resume.pdf"
+            className="px-8 py-4 border border-white/20 bg-black/40 backdrop-blur-md rounded-full hover:bg-white/10 hover:border-amber-400/50 transition-all text-white hover:text-amber-400 shadow-lg flex items-center gap-2 z-30"
+          >
+            <FileText size={18} />
+            <span>Download Resume</span>
+          </a>
         </motion.div>
       </motion.div>
     </section>

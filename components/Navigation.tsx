@@ -17,12 +17,13 @@ const navItems = [
 
 const Navigation: React.FC<NavigationProps> = ({ currentView, onChangeView }) => {
   return (
-    <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100]">
+    <nav aria-label="Main Navigation" className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100]">
       <motion.div
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.5, type: 'spring' }}
         className="flex items-center gap-2 p-2 rounded-full bg-white/10 backdrop-blur-xl border border-white/10 shadow-2xl"
+        role="tablist"
       >
         {navItems.map((item) => {
           const isActive = currentView === item.id;
@@ -32,6 +33,9 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, onChangeView }) =>
             <button
               key={item.id}
               onClick={() => onChangeView(item.id as ViewState)}
+              aria-label={`Navigate to ${item.label} section`}
+              aria-selected={isActive}
+              role="tab"
               className="relative group flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300"
             >
               {isActive && (
@@ -44,6 +48,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, onChangeView }) =>
 
               <Icon
                 size={20}
+                aria-hidden="true"
                 className={`relative z-10 transition-colors duration-300 ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-white'}`}
               />
 

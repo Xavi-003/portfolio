@@ -348,7 +348,7 @@ const ProjectCard: React.FC<ProjectCardProps> = React.memo(({ project, onClick, 
             ) : (
               <motion.img
                 src={project.image}
-                alt={project.title}
+                alt={`Cover image for ${project.title}`}
                 className="w-full h-full object-cover"
                 loading="lazy"
               />
@@ -357,7 +357,7 @@ const ProjectCard: React.FC<ProjectCardProps> = React.memo(({ project, onClick, 
             project.image ? (
               <img
                 src={project.image}
-                alt={project.title}
+                alt={`Cover image for ${project.title}`}
                 className="w-full h-full object-cover"
                 loading="lazy"
               />
@@ -469,9 +469,10 @@ const Projects: React.FC = () => {
 
           <button
             onClick={prevSlide}
+            aria-label="Previous project"
             className="absolute left-4 lg:left-0 z-40 p-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-neon-violet/50 transition-all text-white hidden md:flex"
           >
-            <ChevronLeft size={24} />
+            <ChevronLeft size={24} aria-hidden="true" />
           </button>
 
           <div className="relative w-full h-full flex items-center justify-center">
@@ -495,9 +496,10 @@ const Projects: React.FC = () => {
 
           <button
             onClick={nextSlide}
+            aria-label="Next project"
             className="absolute right-4 lg:right-0 z-40 p-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-neon-violet/50 transition-all text-white hidden md:flex"
           >
-            <ChevronRight size={24} />
+            <ChevronRight size={24} aria-hidden="true" />
           </button>
         </div>
 
@@ -549,9 +551,10 @@ const Projects: React.FC = () => {
                 exit={{ scale: 0, rotate: 180 }}
                 transition={{ delay: 0.2, type: 'spring', stiffness: 300, damping: 20 }}
                 onClick={(e) => { e.stopPropagation(); setSelectedId(null); }}
+                aria-label="Close project details"
                 className="absolute top-6 right-6 z-30 p-3 bg-black/40 text-white rounded-full hover:bg-white hover:text-black transition-colors backdrop-blur-md border border-white/10 group"
               >
-                <X size={24} className="group-hover:rotate-90 transition-transform duration-300" />
+                <X size={24} aria-hidden="true" className="group-hover:rotate-90 transition-transform duration-300" />
               </motion.button>
 
               {(() => {

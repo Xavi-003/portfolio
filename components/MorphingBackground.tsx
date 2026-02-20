@@ -77,6 +77,7 @@ const MorphingBackground: React.FC<MorphingBackgroundProps> = ({ view }) => {
           }
         }}
         className="absolute opacity-60 mix-blend-screen"
+        style={{ willChange: "transform, border-radius", WebkitTransform: "translateZ(0)" }}
       />
 
       {/* Secondary complementary blob */}
@@ -89,6 +90,7 @@ const MorphingBackground: React.FC<MorphingBackgroundProps> = ({ view }) => {
         }}
         transition={{ duration: 2.5, ease: "easeInOut" }}
         className="absolute w-[40vw] h-[40vw] bg-fuchsia-900/30 rounded-full blur-[120px] mix-blend-screen"
+        style={{ willChange: "transform, opacity", WebkitTransform: "translateZ(0)" }}
       />
 
       {/* Tertiary accent blob for extra depth */}
@@ -101,6 +103,7 @@ const MorphingBackground: React.FC<MorphingBackgroundProps> = ({ view }) => {
         }}
         transition={{ duration: 3, ease: "easeInOut" }}
         className="absolute w-[35vw] h-[35vw] bg-violet-800/25 rounded-full blur-[110px] mix-blend-screen"
+        style={{ willChange: "transform, opacity", WebkitTransform: "translateZ(0)" }}
       />
     </div>
   );

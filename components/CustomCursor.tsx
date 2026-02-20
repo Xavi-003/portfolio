@@ -15,50 +15,55 @@ const CustomCursor: React.FC = () => {
   const [hoveredTag, setHoveredTag] = useState<string>('');
 
   useEffect(() => {
+    let animationFrameId: number;
+
     const moveMouse = (e: MouseEvent) => {
       // Ignore 0,0 coordinates to prevent jumps
       if (e.clientX === 0 && e.clientY === 0) return;
 
-      cursorX.set(e.clientX);
-      cursorY.set(e.clientY);
-      if (!isVisible) setIsVisible(true);
+      // Use requestAnimationFrame to throttle coordinate updates
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = requestAnimationFrame(() => {
+        cursorX.set(e.clientX);
+        cursorY.set(e.clientY);
+        if (!isVisible) setIsVisible(true);
+      });
     };
 
     const mouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
+      if (!target || !target.tagName) return;
+
       const tagName = target.tagName.toLowerCase();
 
-      // Check if hovering over clickable elements
+      // Check if hovering over clickable elements (simplified for performance)
       const isClickable =
         tagName === 'a' ||
         tagName === 'button' ||
-        target.closest('a') ||
-        target.closest('button') ||
-        target.getAttribute('role') === 'button' ||
-        target.closest('[role="button"]');
+        target.closest('a') !== null ||
+        target.closest('button') !== null ||
+        target.getAttribute('role') === 'button';
 
-      setIsHovering(!!isClickable);
+      setIsHovering(isClickable);
 
-      // Set tag label
+      // Set tag label (simplified for performance)
       if (tagName === 'a' || target.closest('a')) setHoveredTag('<Link />');
       else if (tagName === 'button' || target.closest('button')) setHoveredTag('<Button />');
       else if (tagName === 'input' || tagName === 'textarea') setHoveredTag('<Input />');
       else if (tagName === 'img') setHoveredTag('<Img />');
-      else if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(tagName)) setHoveredTag(`<${tagName.toUpperCase()} />`);
-      else if (tagName === 'p' || tagName === 'span') setHoveredTag('<Text />');
-      else if (target.getAttribute('role') === 'button') setHoveredTag('<Button />');
+      else if (tagName === 'p' || tagName === 'span' || tagName.startsWith('h')) setHoveredTag(`<${tagName} />`);
       else setHoveredTag('');
     };
 
-    // Use document listeners for better coverage
-    document.addEventListener('mousemove', moveMouse);
-    document.addEventListener('mouseover', mouseOver);
+    document.addEventListener('mousemove', moveMouse, { passive: true });
+    document.addEventListener('mouseover', mouseOver, { passive: true });
 
     return () => {
+      cancelAnimationFrame(animationFrameId);
       document.removeEventListener('mousemove', moveMouse);
       document.removeEventListener('mouseover', mouseOver);
     };
-  }, [isVisible]);
+  }, [isVisible, cursorX, cursorY]);
 
   // Mobile check
   if (typeof navigator !== 'undefined' && /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {

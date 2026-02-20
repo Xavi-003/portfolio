@@ -194,6 +194,7 @@ function App() {
 
           {/* Social Links (Fixed) */}
           <div className="fixed top-6 right-6 z-50 flex gap-6 mix-blend-exclusion text-sm font-mono opacity-70">
+            <a href="https://xavi-003.github.io/blog/" target="_blank" rel="noopener noreferrer" className="hover:text-amber-400 transition-colors">[BLOG]</a>
             <a href="https://www.linkedin.com/in/antony-xavier-4b5019333/" target="_blank" rel="noopener noreferrer" className="hover:text-neon-violet transition-colors">[LINKEDIN]</a>
             <a href="https://github.com/Xavi-003/" target="_blank" rel="noopener noreferrer" className="hover:text-neon-fuchsia transition-colors">[GITHUB]</a>
           </div>
@@ -201,6 +202,7 @@ function App() {
           {/* Game Project Trigger */}
           <motion.button
             onClick={() => window.open('https://xavi-003.github.io/mini_game/', '_blank')}
+            aria-label="Play Mini Games Arcade"
             className="fixed bottom-6 right-24 z-50 p-3 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 text-white hover:bg-neon-fuchsia hover:border-neon-fuchsia transition-all duration-300 group shadow-lg shadow-neon-fuchsia/10"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
@@ -212,7 +214,7 @@ function App() {
               animate={{ rotate: [0, 15, -15, 0] }}
               transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 1, ease: "easeInOut" }}
             >
-              <Gamepad2 size={24} />
+              <Gamepad2 size={24} aria-hidden="true" />
             </motion.div>
           </motion.button>
 
@@ -222,6 +224,7 @@ function App() {
               <motion.button
                 key="chat-trigger"
                 onClick={() => setView('contact')}
+                aria-label="Open AI Assistant Chat"
                 className="fixed bottom-6 right-6 z-50 p-3 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 text-white hover:bg-neon-violet hover:border-neon-violet transition-all duration-300 group shadow-lg shadow-neon-violet/10"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
@@ -234,7 +237,7 @@ function App() {
                   animate={{ y: [0, -4, 0] }}
                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                 >
-                  <MessageCircle size={24} />
+                  <MessageCircle size={24} aria-hidden="true" />
                 </motion.div>
               </motion.button>
             )}
