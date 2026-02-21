@@ -370,7 +370,7 @@ const ProjectCard: React.FC<ProjectCardProps> = React.memo(({ project, onClick, 
         </motion.div>
 
         {/* Info */}
-        <div className="absolute bottom-0 left-0 w-full p-8 z-30 transform translate-z-10 flex flex-col justify-end h-[40%]">
+        <div className="absolute bottom-0 left-0 w-full p-4 md:p-8 z-30 transform translate-z-10 flex flex-col justify-end h-[45%] md:h-[40%]">
           <div className="flex justify-between items-start mb-2">
             <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
               <Layers size={12} className="text-neon-fuchsia" />
@@ -464,7 +464,7 @@ const Projects: React.FC = () => {
 
         {/* Slider Container - removed hover handlers from here */}
         <div
-          className="relative w-full max-w-6xl flex items-center justify-center h-[500px]"
+          className="relative w-full max-w-6xl flex items-center justify-center h-[400px] md:h-[500px]"
         >
 
           <button
@@ -613,7 +613,7 @@ const Projects: React.FC = () => {
 
                     {/* Content Section */}
                     < motion.div
-                      className="lg:w-5/12 p-8 md:p-12 overflow-y-auto custom-scrollbar flex flex-col relative bg-[#0f0518]"
+                      className="lg:w-5/12 p-6 md:p-8 lg:p-12 overflow-y-auto custom-scrollbar flex flex-col relative bg-[#0f0518]"
                       variants={containerVariants}
                       initial="hidden"
                       animate="visible"

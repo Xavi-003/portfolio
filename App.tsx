@@ -184,26 +184,26 @@ function App() {
 
           {/* Logo / Branding (Fixed) */}
           <div
-            className="fixed top-6 left-6 z-50 mix-blend-exclusion cursor-pointer"
+            className="fixed top-4 left-4 md:top-6 md:left-6 z-50 mix-blend-exclusion cursor-pointer"
             onClick={() => setView('hero')}
           >
-            <span className="font-display font-bold text-xl tracking-tighter text-white">
+            <span className="font-display font-bold text-lg md:text-xl tracking-tighter text-white">
               Antony Xavier<span className="text-neon-fuchsia">.DEV</span>
             </span>
           </div>
 
           {/* Social Links (Fixed) */}
-          <div className="fixed top-6 right-6 z-50 flex gap-6 mix-blend-exclusion text-sm font-mono opacity-70">
+          <div className="fixed top-4 right-4 md:top-6 md:right-6 z-50 flex gap-3 md:gap-6 mix-blend-exclusion text-xs md:text-sm font-mono opacity-80 md:opacity-70">
             <a href="https://xavi-003.github.io/blog/" target="_blank" rel="noopener noreferrer" className="hover:text-amber-400 transition-colors">[BLOG]</a>
-            <a href="https://www.linkedin.com/in/antony-xavier-4b5019333/" target="_blank" rel="noopener noreferrer" className="hover:text-neon-violet transition-colors">[LINKEDIN]</a>
-            <a href="https://github.com/Xavi-003/" target="_blank" rel="noopener noreferrer" className="hover:text-neon-fuchsia transition-colors">[GITHUB]</a>
+            <a href="https://www.linkedin.com/in/antony-xavier-4b5019333/" target="_blank" rel="noopener noreferrer" className="hover:text-neon-violet transition-colors">[LI]</a>
+            <a href="https://github.com/Xavi-003/" target="_blank" rel="noopener noreferrer" className="hover:text-neon-fuchsia transition-colors">[GH]</a>
           </div>
 
           {/* Game Project Trigger */}
           <motion.button
             onClick={() => window.open('https://xavi-003.github.io/mini_game/', '_blank')}
             aria-label="Play Mini Games Arcade"
-            className="fixed bottom-6 right-24 z-50 p-3 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 text-white hover:bg-neon-fuchsia hover:border-neon-fuchsia transition-all duration-300 group shadow-lg shadow-neon-fuchsia/10"
+            className="fixed bottom-24 right-4 md:bottom-6 md:right-24 z-50 p-2 md:p-3 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 text-white hover:bg-neon-fuchsia hover:border-neon-fuchsia transition-all duration-300 group shadow-lg shadow-neon-fuchsia/10"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             initial={{ opacity: 0, x: 20 }}
@@ -225,7 +225,7 @@ function App() {
                 key="chat-trigger"
                 onClick={() => setView('contact')}
                 aria-label="Open AI Assistant Chat"
-                className="fixed bottom-6 right-6 z-50 p-3 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 text-white hover:bg-neon-violet hover:border-neon-violet transition-all duration-300 group shadow-lg shadow-neon-violet/10"
+                className="fixed bottom-36 right-4 md:bottom-6 md:right-6 z-50 p-2 md:p-3 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 text-white hover:bg-neon-violet hover:border-neon-violet transition-all duration-300 group shadow-lg shadow-neon-violet/10"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 initial={{ opacity: 0, x: 20, scale: 0 }}

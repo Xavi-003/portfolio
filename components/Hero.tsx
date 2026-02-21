@@ -57,8 +57,8 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         </motion.div>
 
         {/* Main Title with Typing Effect */}
-        <div className="min-h-[80px] md:min-h-[128px] mb-6 flex items-center justify-center">
-          <h1 className="text-5xl md:text-8xl font-display font-bold leading-tight tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-purple-200 flex items-center drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">
+        <div className="min-h-[80px] md:min-h-[128px] mb-6 flex items-center justify-center px-2">
+          <h1 className="text-4xl sm:text-5xl md:text-8xl font-display font-bold leading-tight tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-purple-200 flex items-center drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">
             {text}
             <motion.span
               aria-hidden="true"
@@ -75,25 +75,25 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         </div>
 
         <motion.p
-          className="text-lg md:text-xl text-indigo-100 max-w-2xl mx-auto mb-10 leading-relaxed drop-shadow-md font-medium"
+          className="text-base sm:text-lg md:text-xl text-indigo-100 max-w-2xl mx-auto mb-10 leading-relaxed drop-shadow-md font-medium px-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
         >
           Designing high-performance distributed systems and fluid user interfaces.
-          <br />Specializing in <span className="text-neon-fuchsia font-bold">React</span>, <span className="text-neon-violet font-bold">Node.js</span>, and <span className="text-white font-bold">Cloud Native</span> Architecture.
+          <br className="hidden sm:block" />Specializing in <span className="text-neon-fuchsia font-bold">React</span>, <span className="text-neon-violet font-bold">Node.js</span>, and <span className="text-white font-bold">Cloud Native</span> Architecture.
         </motion.p>
 
         {/* CTA Buttons */}
         <motion.div
-          className="flex flex-col sm:flex-row gap-5 justify-center items-center"
+          className="flex flex-col sm:flex-row gap-4 justify-center items-center px-4 w-full"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.4 }}
         >
           <button
             onClick={() => onNavigate('projects')}
-            className="group relative px-8 py-4 bg-white text-black font-bold rounded-full overflow-hidden flex items-center gap-2 transition-all hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(255,255,255,0.5)] z-30"
+            className="group w-full sm:w-auto justify-center relative px-8 py-3 sm:py-4 bg-white text-black font-bold rounded-full overflow-hidden flex items-center gap-2 transition-all hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(255,255,255,0.5)] z-30"
           >
             <span className="relative z-10">View Projects</span>
             <ArrowRight className="relative z-10 w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -101,7 +101,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
 
           <button
             onClick={() => onNavigate('contact')}
-            className="px-8 py-4 border border-white/20 bg-black/40 backdrop-blur-md rounded-full hover:bg-white/10 hover:border-neon-purple/50 transition-all text-white hover:text-neon-purple shadow-lg flex items-center gap-2 z-30"
+            className="w-full sm:w-auto justify-center px-8 py-3 sm:py-4 border border-white/20 bg-black/40 backdrop-blur-md rounded-full hover:bg-white/10 hover:border-neon-purple/50 transition-all text-white hover:text-neon-purple shadow-lg flex items-center gap-2 z-30"
           >
             <Terminal size={18} />
             <span>Execute Protocol</span>
@@ -110,7 +110,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
           <a
             href="/portfolio/resume.pdf"
             download="Antony_Xavier_Resume.pdf"
-            className="px-8 py-4 border border-white/20 bg-black/40 backdrop-blur-md rounded-full hover:bg-white/10 hover:border-amber-400/50 transition-all text-white hover:text-amber-400 shadow-lg flex items-center gap-2 z-30"
+            className="w-full sm:w-auto justify-center px-8 py-3 sm:py-4 border border-white/20 bg-black/40 backdrop-blur-md rounded-full hover:bg-white/10 hover:border-amber-400/50 transition-all text-white hover:text-amber-400 shadow-lg flex items-center gap-2 z-30"
           >
             <FileText size={18} />
             <span>Download Resume</span>

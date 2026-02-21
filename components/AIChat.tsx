@@ -43,7 +43,7 @@ const AIChat: React.FC = () => {
                 className="w-full max-w-3xl glass-panel rounded-3xl overflow-hidden flex flex-col h-[70vh] shadow-[0_0_80px_-20px_rgba(124,58,237,0.4)]"
             >
                 {/* Header */}
-                <div className="p-6 border-b border-white/10 bg-[#0a0015]/80 flex items-center justify-between backdrop-blur-md">
+                <div className="p-4 sm:p-6 border-b border-white/10 bg-[#0a0015]/80 flex items-center justify-between backdrop-blur-md">
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-600 to-fuchsia-600 flex items-center justify-center shadow-lg shadow-violet-500/30 relative overflow-hidden">
                             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-30"></div>
@@ -63,21 +63,21 @@ const AIChat: React.FC = () => {
                 </div>
 
                 {/* Chat Area */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-8 bg-black/20">
+                <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 sm:space-y-8 bg-black/20 custom-scrollbar">
                     {messages.map((msg, idx) => (
                         <motion.div
                             key={msg.timestamp + idx}
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className={`flex gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
+                            className={`flex gap-3 sm:gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
                         >
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 border ${msg.role === 'user'
+                            <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0 border ${msg.role === 'user'
                                 ? 'bg-white text-black border-white'
                                 : 'bg-violet-900/50 text-neon-fuchsia border-neon-violet/30'
                                 }`}>
-                                {msg.role === 'user' ? <User size={18} /> : <Sparkles size={18} />}
+                                {msg.role === 'user' ? <User size={16} /> : <Sparkles size={16} />}
                             </div>
-                            <div className={`p-5 rounded-3xl max-w-[80%] text-sm leading-relaxed shadow-lg ${msg.role === 'user'
+                            <div className={`p-4 sm:p-5 rounded-2xl sm:rounded-3xl max-w-[85%] sm:max-w-[80%] text-sm leading-relaxed shadow-lg ${msg.role === 'user'
                                 ? 'bg-white text-black rounded-tr-none'
                                 : 'bg-[#1e1b2e] border border-white/10 rounded-tl-none text-gray-200'
                                 }`}>
@@ -87,11 +87,11 @@ const AIChat: React.FC = () => {
                     ))}
 
                     {isTyping && (
-                        <div className="flex gap-4">
-                            <div className="w-10 h-10 rounded-full bg-violet-900/50 text-neon-fuchsia border border-neon-violet/30 flex items-center justify-center shrink-0">
-                                <Sparkles size={18} />
+                        <div className="flex gap-3 sm:gap-4">
+                            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-violet-900/50 text-neon-fuchsia border border-neon-violet/30 flex items-center justify-center shrink-0">
+                                <Sparkles size={16} />
                             </div>
-                            <div className="p-5 rounded-3xl bg-[#1e1b2e] border border-white/10 rounded-tl-none flex items-center min-w-[80px]">
+                            <div className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-[#1e1b2e] border border-white/10 rounded-tl-none flex items-center min-w-[60px] sm:min-w-[80px]">
                                 <div className="flex gap-1.5">
                                     <span className="w-2 h-2 bg-neon-violet rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                                     <span className="w-2 h-2 bg-neon-fuchsia rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -104,20 +104,20 @@ const AIChat: React.FC = () => {
                 </div>
 
                 {/* Input Area */}
-                <div className="p-6 bg-[#0a0015]/90 border-t border-white/10 backdrop-blur-lg">
-                    <div className="flex gap-3">
+                <div className="p-4 sm:p-6 bg-[#0a0015]/90 border-t border-white/10 backdrop-blur-lg">
+                    <div className="flex gap-2 sm:gap-3">
                         <input
                             type="text"
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                             placeholder="Type your message here..."
-                            className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm focus:outline-none focus:border-neon-violet focus:bg-white/10 transition-all placeholder-gray-500 text-white"
+                            className="flex-1 bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl px-4 py-3 sm:px-6 sm:py-4 text-sm focus:outline-none focus:border-neon-violet focus:bg-white/10 transition-all placeholder-gray-500 text-white"
                         />
                         <button
                             onClick={handleSend}
                             disabled={!input.trim() || isTyping}
-                            className="bg-gradient-to-r from-neon-violet to-neon-fuchsia hover:from-violet-600 hover:to-fuchsia-600 disabled:opacity-50 disabled:cursor-not-allowed text-white p-4 rounded-2xl transition-all shadow-[0_0_20px_-5px_rgba(124,58,237,0.5)]"
+                            className="bg-gradient-to-r from-neon-violet to-neon-fuchsia hover:from-violet-600 hover:to-fuchsia-600 disabled:opacity-50 disabled:cursor-not-allowed text-white p-3 sm:p-4 rounded-xl sm:rounded-2xl transition-all shadow-[0_0_20px_-5px_rgba(124,58,237,0.5)]"
                         >
                             {isTyping ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
                         </button>

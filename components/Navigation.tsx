@@ -17,7 +17,7 @@ const navItems = [
 
 const Navigation: React.FC<NavigationProps> = ({ currentView, onChangeView }) => {
   return (
-    <nav aria-label="Main Navigation" className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100]">
+    <nav aria-label="Main Navigation" className="fixed bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 z-[100]">
       <motion.div
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
