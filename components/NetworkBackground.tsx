@@ -45,6 +45,7 @@ const NetworkBackground: React.FC = () => {
     // Configuration
     const NODE_COUNT = window.innerWidth < 768 ? 6 : 12;
     const CONNECTION_DIST = Math.min(width, height) * 0.35;
+    const CONNECTION_DIST_SQ = CONNECTION_DIST * CONNECTION_DIST;
     
     // State
     const nodes: Node[] = [];
@@ -195,9 +196,10 @@ const NetworkBackground: React.FC = () => {
                 const n2 = nodes[j];
                 const dx = n1.x - n2.x;
                 const dy = n1.y - n2.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
+                const distSq = dx * dx + dy * dy;
 
-                if (dist < CONNECTION_DIST) {
+                if (distSq < CONNECTION_DIST_SQ) {
+                    const dist = Math.sqrt(distSq);
                     const opacity = 1 - (dist / CONNECTION_DIST);
                     
                     // Draw Line
