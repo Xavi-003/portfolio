@@ -1,16 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ViewState } from './types';
 import MorphingBackground from './components/MorphingBackground';
 import Navigation from './components/Navigation';
 import Hero from './components/Hero';
-import Projects from './components/Projects';
-import Skills from './components/Skills';
-import AIChat from './components/AIChat';
 import CustomCursor from './components/CustomCursor';
+
+// ⚡ Bolt Optimization: Lazy load heavy components to reduce initial bundle size
+// This splits the code into separate chunks, improving initial load time
+const Projects = lazy(() => import('./components/Projects'));
+const Skills = lazy(() => import('./components/Skills'));
+const AIChat = lazy(() => import('./components/AIChat'));
 import { Database, Server, Shield, Zap, Cpu, MessageCircle, Gamepad2 } from 'lucide-react';
 import ErrorBoundary from './components/ErrorBoundary';
 import { InstallPWA } from './components/InstallPWA';
+
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center w-full h-full min-h-[50vh]">
+    <div className="w-12 h-12 border-4 border-neon-violet border-t-transparent rounded-full animate-spin"></div>
+  </div>
+);
 
 // Loading Component imitating backend startup
 const Loader = ({ onComplete }: { onComplete: () => void }) => {
@@ -144,7 +153,9 @@ function App() {
                   transition={{ duration: 0.5 }}
                 >
                   <ErrorBoundary>
-                    <Projects />
+                    <Suspense fallback={<LoadingSpinner />}>
+                      <Projects />
+                    </Suspense>
                   </ErrorBoundary>
                 </motion.div>
               )}
@@ -158,7 +169,9 @@ function App() {
                   transition={{ duration: 0.5 }}
                 >
                   <ErrorBoundary>
-                    <Skills />
+                    <Suspense fallback={<LoadingSpinner />}>
+                      <Skills />
+                    </Suspense>
                   </ErrorBoundary>
                 </motion.div>
               )}
@@ -172,7 +185,9 @@ function App() {
                   transition={{ duration: 0.5 }}
                 >
                   <ErrorBoundary>
-                    <AIChat />
+                    <Suspense fallback={<LoadingSpinner />}>
+                      <AIChat />
+                    </Suspense>
                   </ErrorBoundary>
                 </motion.div>
               )}
