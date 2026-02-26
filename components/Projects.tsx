@@ -247,7 +247,7 @@ interface ProjectCardProps {
   onClick: () => void;
   onCenterClick: () => void;
   isActive: boolean;
-  position: 'left' | 'center' | 'right' | 'hidden';
+  position: 'left' | 'center' | 'right' | 'hidden' | 'static';
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = React.memo(({ project, onClick, onCenterClick, isActive, position }) => {
@@ -297,13 +297,14 @@ const ProjectCard: React.FC<ProjectCardProps> = React.memo(({ project, onClick, 
     center: { x: 0, scale: 1, opacity: 1, zIndex: 30, filter: 'blur(0px)' },
     left: { x: -380, scale: 0.85, opacity: 0.5, zIndex: 20, filter: 'blur(2px)' },
     right: { x: 380, scale: 0.85, opacity: 0.5, zIndex: 20, filter: 'blur(2px)' },
-    hidden: { x: 0, scale: 0.5, opacity: 0, zIndex: 10, filter: 'blur(10px)' }
+    hidden: { x: 0, scale: 0.5, opacity: 0, zIndex: 10, filter: 'blur(10px)' },
+    static: { x: 0, scale: 1, opacity: 1, zIndex: 10, filter: 'blur(0px)' }
   }), []);
 
   return (
     <motion.div
       ref={ref}
-      layoutId={`card-container-${project.id}`}
+      {...(position !== 'static' ? { layoutId: `card-container-${project.id}` } : {})}
       initial="hidden"
       animate={position}
       variants={variants}
@@ -316,8 +317,9 @@ const ProjectCard: React.FC<ProjectCardProps> = React.memo(({ project, onClick, 
         rotateY: isActive ? rotateY : 0,
         transformStyle: "preserve-3d",
         willChange: 'transform',
+        position: position === 'static' ? 'relative' : 'absolute'
       }}
-      className="w-full max-w-md cursor-pointer perspective-1000"
+      className="w-full max-w-md cursor-pointer perspective-1000 mx-auto"
     >
       <div className="relative h-[450px] w-full rounded-3xl bg-[#0f0518] border border-white/10 overflow-hidden shadow-2xl group-hover:border-neon-violet/50 transition-colors duration-500">
 
@@ -331,7 +333,7 @@ const ProjectCard: React.FC<ProjectCardProps> = React.memo(({ project, onClick, 
 
         {/* Visual Content */}
         <motion.div
-          layoutId={`card-image-wrapper-${project.id}`}
+          {...(position !== 'static' ? { layoutId: `card-image-wrapper-${project.id}` } : {})}
           className="h-[60%] w-full overflow-hidden relative z-10 bg-black"
           style={{ transform: "translateZ(20px)", willChange: 'transform' }}
         >
@@ -386,7 +388,7 @@ const ProjectCard: React.FC<ProjectCardProps> = React.memo(({ project, onClick, 
           </div>
 
           <motion.h3
-            layoutId={`card-title-${project.id}`}
+            {...(position !== 'static' ? { layoutId: `card-title-${project.id}` } : {})}
             className="text-2xl font-display font-bold text-white mb-2 transition-all"
           >
             {project.title}
@@ -442,9 +444,9 @@ const Projects: React.FC = () => {
   }, [currentIndex]);
 
   return (
-    <section className="min-h-screen lg:h-screen w-full flex flex-col items-center justify-center px-4 py-12 lg:py-16 relative z-10 overflow-hidden">
+    <section className="w-full flex flex-col items-center justify-center px-4 pt-16 pb-4 md:pt-[5rem] md:pb-6 relative z-10 overflow-hidden">
       <div className="w-full max-w-7xl flex flex-col items-center">
-        <div className="mb-12 relative text-center">
+        <div className="mb-2 md:mb-4 relative text-center">
           <motion.h2
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -462,15 +464,14 @@ const Projects: React.FC = () => {
           </motion.p>
         </div>
 
-        {/* Slider Container - removed hover handlers from here */}
+        {/* Desktop Slider */}
         <div
-          className="relative w-full max-w-6xl flex items-center justify-center h-[400px] md:h-[500px]"
+          className="relative w-full max-w-6xl hidden md:flex items-center justify-center h-[460px]"
         >
-
           <button
             onClick={prevSlide}
             aria-label="Previous project"
-            className="absolute left-4 lg:left-0 z-40 p-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-neon-violet/50 transition-all text-white hidden md:flex"
+            className="absolute left-0 z-40 p-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-neon-violet/50 transition-all text-white"
           >
             <ChevronLeft size={24} aria-hidden="true" />
           </button>
@@ -497,14 +498,35 @@ const Projects: React.FC = () => {
           <button
             onClick={nextSlide}
             aria-label="Next project"
-            className="absolute right-4 lg:right-0 z-40 p-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-neon-violet/50 transition-all text-white hidden md:flex"
+            className="absolute right-0 z-40 p-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-neon-violet/50 transition-all text-white"
           >
             <ChevronRight size={24} aria-hidden="true" />
           </button>
         </div>
 
-        {/* Indicators */}
-        <div className="flex gap-2 mt-8">
+        {/* Mobile Vertical List */}
+        <div className="flex md:hidden flex-col gap-8 w-full">
+          {projects.map((project) => (
+            <motion.div
+              key={project.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.5 }}
+            >
+              <ProjectCard
+                project={project}
+                onClick={() => setSelectedId(project.id)}
+                onCenterClick={() => {}}
+                isActive={true}
+                position="static"
+              />
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Indicators - Desktop Only */}
+        <div className="hidden md:flex gap-2 mt-3">
           {projects.map((_, idx) => (
             <button
               key={idx}

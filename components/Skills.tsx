@@ -84,7 +84,7 @@ const Skills: React.FC = () => {
     const activeStep = pipelineSteps[activeStepIndex];
 
     return (
-        <section className="min-h-screen lg:h-screen w-full flex flex-col items-center justify-center px-4 py-12 lg:py-16 relative z-10 overflow-x-hidden">
+        <section className="w-full flex flex-col items-center justify-center px-4 pt-20 pb-8 lg:pt-24 lg:pb-10 relative z-10 overflow-x-hidden">
             {/* Background Tech Grid */}
             <div className="absolute inset-0 z-0 opacity-10"
                 style={{ backgroundImage: 'linear-gradient(#7c3aed 1px, transparent 1px), linear-gradient(90deg, #7c3aed 1px, transparent 1px)', backgroundSize: '50px 50px' }}>
@@ -93,7 +93,7 @@ const Skills: React.FC = () => {
             <div className="w-full max-w-7xl relative z-10">
 
                 {/* Header */}
-                <div className="text-center mb-16">
+                <div className="text-center mb-8">
                     <motion.div
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -192,7 +192,7 @@ const Skills: React.FC = () => {
 
                 {/* Live Code Terminal */}
                 <motion.div
-                    className="mt-8 lg:mt-10 w-full max-w-3xl mx-auto glass-panel rounded-2xl overflow-hidden border border-white/10 shadow-2xl"
+                    className="mt-6 w-full max-w-3xl mx-auto glass-panel rounded-2xl overflow-hidden border border-white/10 shadow-2xl"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                 >
