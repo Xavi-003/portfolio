@@ -170,6 +170,7 @@ const NetworkBackground: React.FC = () => {
     };
 
     // Animation Loop
+    let animationFrameId: number;
     let lastTime = 0;
     const render = (time: number) => {
         const dt = time - lastTime;
@@ -313,10 +314,10 @@ const NetworkBackground: React.FC = () => {
             ctx.globalAlpha = 1;
         }
 
-        requestAnimationFrame(render);
+        animationFrameId = requestAnimationFrame(render);
     };
 
-    requestAnimationFrame(render);
+    animationFrameId = requestAnimationFrame(render);
 
     const handleResize = () => {
         width = canvas.width = window.innerWidth;
@@ -324,7 +325,10 @@ const NetworkBackground: React.FC = () => {
     };
 
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    return () => {
+        window.removeEventListener('resize', handleResize);
+        cancelAnimationFrame(animationFrameId);
+    };
   }, []);
 
   return (
