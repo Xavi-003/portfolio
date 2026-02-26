@@ -10,6 +10,9 @@ const pipelineSteps = [
         subtext: 'Frontend State',
         icon: Globe,
         color: 'text-cyan-400',
+        borderColor: 'border-cyan-500',
+        borderTransparentColor: 'border-cyan-500/30',
+        bgColor: 'bg-cyan-400',
         glow: 'shadow-cyan-400/50',
         code: `const fetchData = async () => {
   dispatch({ type: 'FETCH_START' });
@@ -23,6 +26,9 @@ const pipelineSteps = [
         subtext: 'Load Balancing',
         icon: Server,
         color: 'text-neon-fuchsia',
+        borderColor: 'border-neon-500',
+        borderTransparentColor: 'border-neon-500/30',
+        bgColor: 'bg-neon-fuchsia',
         glow: 'shadow-neon-fuchsia/50',
         code: `app.use(async (req, res, next) => {
   const token = req.headers.authorization;
@@ -36,6 +42,9 @@ const pipelineSteps = [
         subtext: 'Business Logic',
         icon: Cpu,
         color: 'text-neon-violet',
+        borderColor: 'border-neon-500',
+        borderTransparentColor: 'border-neon-500/30',
+        bgColor: 'bg-neon-violet',
         glow: 'shadow-neon-violet/50',
         code: `async function getUserStats(userId) {
   const data = await redis.get(userId);
@@ -50,6 +59,9 @@ const pipelineSteps = [
         subtext: 'Data Layer',
         icon: Database,
         color: 'text-emerald-400',
+        borderColor: 'border-emerald-500',
+        borderTransparentColor: 'border-emerald-500/30',
+        bgColor: 'bg-emerald-400',
         glow: 'shadow-emerald-400/50',
         code: `SELECT * FROM user_metrics 
 WHERE user_id = $1 
@@ -123,7 +135,7 @@ const Skills: React.FC = () => {
                                     layout
                                     className={`relative z-10 p-1 rounded-3xl transition-all duration-500 h-full ${isActive ? 'bg-gradient-to-br from-white/20 to-white/5 scale-105' : 'bg-transparent'}`}
                                 >
-                                    <div className={`relative p-4 lg:p-5 rounded-[1.3rem] bg-[#0a0015] border transition-all duration-500 flex flex-col h-full ${isActive ? `border-${step.color.split('-')[1]}-500 shadow-[0_0_50px_-10px_rgba(0,0,0,0.5)]` : 'border-white/10 hover:border-white/20'}`}>
+                                    <div className={`relative p-4 lg:p-5 rounded-[1.3rem] bg-[#0a0015] border transition-all duration-500 flex flex-col h-full ${isActive ? `${step.borderColor} shadow-[0_0_50px_-10px_rgba(0,0,0,0.5)]` : 'border-white/10 hover:border-white/20'}`}>
 
                                         {/* Node Header */}
                                         <div className="flex items-center gap-3 mb-4">
@@ -146,7 +158,7 @@ const Skills: React.FC = () => {
                                             {step.techs.map(tech => (
                                                 <span
                                                     key={tech}
-                                                    className={`px-2 py-1 rounded text-[10px] font-mono border transition-colors duration-300 ${isActive ? `border-${step.color.split('-')[1]}-500/30 text-white bg-white/5` : 'border-white/5 text-gray-600 bg-transparent'}`}
+                                                    className={`px-2 py-1 rounded text-[10px] font-mono border transition-colors duration-300 ${isActive ? `${step.borderTransparentColor} text-white bg-white/5` : 'border-white/5 text-gray-600 bg-transparent'}`}
                                                 >
                                                     {tech}
                                                 </span>
@@ -156,7 +168,7 @@ const Skills: React.FC = () => {
                                         {/* Active State Indicator */}
                                         <div className={`mt-auto h-1 w-full rounded-full overflow-hidden bg-white/5 ${isActive ? 'opacity-100' : 'opacity-0'}`}>
                                             <motion.div
-                                                className={`h-full ${step.color.replace('text-', 'bg-')}`}
+                                                className={`h-full ${step.bgColor}`}
                                                 initial={{ width: 0 }}
                                                 animate={{ width: '100%' }}
                                                 transition={{ duration: 3, ease: "linear" }}
@@ -169,7 +181,7 @@ const Skills: React.FC = () => {
                                 {isActive && index !== pipelineSteps.length - 1 && (
                                     <motion.div
                                         layoutId="pulse-orb"
-                                        className={`hidden lg:block absolute top-[3.5rem] -right-6 w-4 h-4 rounded-full ${step.color.replace('text-', 'bg-')} z-20 shadow-[0_0_20px_currentColor]`}
+                                        className={`hidden lg:block absolute top-[3.5rem] -right-6 w-4 h-4 rounded-full ${step.bgColor} z-20 shadow-[0_0_20px_currentColor]`}
                                         transition={{ type: "spring", stiffness: 500, damping: 30 }}
                                     />
                                 )}
@@ -219,7 +231,7 @@ const Skills: React.FC = () => {
                                 <motion.div
                                     animate={{ opacity: [0, 1] }}
                                     transition={{ repeat: Infinity, duration: 0.8 }}
-                                    className={`w-2.5 h-5 ${activeStep.color.replace('text-', 'bg-')} mt-2 inline-block`}
+                                    className={`w-2.5 h-5 ${activeStep.bgColor} mt-2 inline-block`}
                                 />
                             </motion.div>
                         </AnimatePresence>
