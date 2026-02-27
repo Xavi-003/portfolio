@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 
 const CustomCursor: React.FC = () => {
@@ -10,11 +10,21 @@ const CustomCursor: React.FC = () => {
   const cursorXSpring = useSpring(cursorX, springConfig);
   const cursorYSpring = useSpring(cursorY, springConfig);
 
-  const [isVisible, setIsVisible] = useState(false);
-  const [isHovering, setIsHovering] = useState(false);
-  const [hoveredTag, setHoveredTag] = useState<string>('');
+  // Use refs instead of state for values that don't need to trigger re-renders
+  const isVisibleRef = useRef(false);
+  const [isVisible, setIsVisible] = React.useState(false);
+  const [isHovering, setIsHovering] = React.useState(false);
+  const [hoveredTag, setHoveredTag] = React.useState<string>('');
+
+  // Check for touch/coarse pointer device (more reliable than UA sniffing)
+  const isTouchDevice = useRef(
+    typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches
+  );
 
   useEffect(() => {
+    // Skip entirely on touch devices
+    if (isTouchDevice.current) return;
+
     let animationFrameId: number;
 
     const moveMouse = (e: MouseEvent) => {
@@ -26,7 +36,10 @@ const CustomCursor: React.FC = () => {
       animationFrameId = requestAnimationFrame(() => {
         cursorX.set(e.clientX);
         cursorY.set(e.clientY);
-        if (!isVisible) setIsVisible(true);
+        if (!isVisibleRef.current) {
+          isVisibleRef.current = true;
+          setIsVisible(true);
+        }
       });
     };
 
@@ -36,7 +49,7 @@ const CustomCursor: React.FC = () => {
 
       const tagName = target.tagName.toLowerCase();
 
-      // Check if hovering over clickable elements (simplified for performance)
+      // Check if hovering over clickable elements
       const isClickable =
         tagName === 'a' ||
         tagName === 'button' ||
@@ -46,7 +59,7 @@ const CustomCursor: React.FC = () => {
 
       setIsHovering(isClickable);
 
-      // Set tag label (simplified for performance)
+      // Set tag label
       if (tagName === 'a' || target.closest('a')) setHoveredTag('<Link />');
       else if (tagName === 'button' || target.closest('button')) setHoveredTag('<Button />');
       else if (tagName === 'input' || tagName === 'textarea') setHoveredTag('<Input />');
@@ -63,10 +76,11 @@ const CustomCursor: React.FC = () => {
       document.removeEventListener('mousemove', moveMouse);
       document.removeEventListener('mouseover', mouseOver);
     };
-  }, [isVisible, cursorX, cursorY]);
+    // Fixed: removed isVisible from deps to prevent event listener re-registration
+  }, [cursorX, cursorY]);
 
-  // Mobile check
-  if (typeof navigator !== 'undefined' && /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  // Don't render on touch devices
+  if (isTouchDevice.current) {
     return null;
   }
 

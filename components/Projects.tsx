@@ -164,23 +164,28 @@ BotVisual.displayName = 'BotVisual';
 const GameVisual = React.memo(() => {
   // Tic-Tac-Toe Grid State Animation
   const [board, setBoard] = useState(Array(9).fill(null));
+  const currentIndexRef = useRef(0);
 
   useEffect(() => {
-    let currentIndex = 0;
-    const moves = [0, 4, 1, 2, 8, 5, 3, 6, 7]; // Sequence of moves
-    const symbols = ['X', 'O', 'X', 'O', 'X', 'O', 'X', 'O', 'X']; // Alternating symbols
+    const moves = [0, 4, 1, 2, 8, 5, 3, 6, 7];
+    const symbols = ['X', 'O', 'X', 'O', 'X', 'O', 'X', 'O', 'X'];
+    currentIndexRef.current = 0;
 
     const interval = setInterval(() => {
-      setBoard(prev => {
-        const newBoard = [...prev];
+      setBoard(() => {
+        const idx = currentIndexRef.current;
         // Reset if full
-        if (currentIndex >= moves.length) {
-          currentIndex = 0;
+        if (idx >= moves.length) {
+          currentIndexRef.current = 0;
           return Array(9).fill(null);
         }
 
-        newBoard[moves[currentIndex]] = symbols[currentIndex];
-        currentIndex++;
+        const newBoard = Array(9).fill(null);
+        // Replay all moves up to current index
+        for (let i = 0; i <= idx; i++) {
+          newBoard[moves[i]] = symbols[i];
+        }
+        currentIndexRef.current++;
         return newBoard;
       });
     }, 800);
@@ -517,7 +522,7 @@ const Projects: React.FC = () => {
               <ProjectCard
                 project={project}
                 onClick={() => setSelectedId(project.id)}
-                onCenterClick={() => {}}
+                onCenterClick={() => { }}
                 isActive={true}
                 position="static"
               />

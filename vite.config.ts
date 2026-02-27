@@ -25,8 +25,8 @@ export default defineConfig(({ mode }) => {
           theme_color: '#7c3aed',
           background_color: '#05010a',
           display: 'standalone',
-          start_url: '/',
-          scope: '/',
+          start_url: '/portfolio/',
+          scope: '/portfolio/',
           description: "Antony Xavier's Personal Portfolio",
           orientation: 'portrait',
           icons: [

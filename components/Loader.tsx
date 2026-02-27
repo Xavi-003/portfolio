@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Cpu, Zap } from 'lucide-react';
@@ -8,17 +8,20 @@ interface LoaderProps {
   variant?: 'full' | 'spinner';
 }
 
+// Moved outside component to avoid re-creation on every render
+const STEPS = [
+  { text: "CORE_SEC_INIT", delay: 400 },
+  { text: "VIRTUAL_DOM_MOUNT", delay: 600 },
+  { text: "NET_STACK_READY", delay: 500 },
+  { text: "PORTFOLIO_LOADED", delay: 300 }
+];
+
 const Loader: React.FC<LoaderProps> = ({ onComplete, variant = 'full' }) => {
   const [activeStep, setActiveStep] = useState(0);
 
-
-
-  const steps = [
-    { text: "CORE_SEC_INIT", delay: 400 },
-    { text: "VIRTUAL_DOM_MOUNT", delay: 600 },
-    { text: "NET_STACK_READY", delay: 500 },
-    { text: "PORTFOLIO_LOADED", delay: 300 }
-  ];
+  // Use ref for onComplete to avoid re-triggering the effect when parent re-renders
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
 
   useEffect(() => {
     if (variant === 'spinner') return;
@@ -27,18 +30,18 @@ const Loader: React.FC<LoaderProps> = ({ onComplete, variant = 'full' }) => {
     let timeoutId: ReturnType<typeof setTimeout>;
 
     const processStep = () => {
-      if (currentIndex >= steps.length) {
-        if (onComplete) timeoutId = setTimeout(onComplete, 600);
+      if (currentIndex >= STEPS.length) {
+        if (onCompleteRef.current) timeoutId = setTimeout(onCompleteRef.current, 600);
         return;
       }
       setActiveStep(currentIndex);
       currentIndex++;
-      timeoutId = setTimeout(processStep, steps[currentIndex - 1].delay);
+      timeoutId = setTimeout(processStep, STEPS[currentIndex - 1].delay);
     };
 
     timeoutId = setTimeout(processStep, 100);
     return () => clearTimeout(timeoutId);
-  }, [onComplete, variant]);
+  }, [variant]); // Removed onComplete from deps — using ref instead
 
   if (variant === 'spinner') {
     return createPortal(
@@ -108,7 +111,7 @@ const Loader: React.FC<LoaderProps> = ({ onComplete, variant = 'full' }) => {
               style={{ transformOrigin: "50px 50px" }}
             />
 
-            {/* Web-Dev Refinement: Center Symbols */}
+            {/* Center Symbol */}
             <text
               x="50"
               y="58"
@@ -167,7 +170,7 @@ const Loader: React.FC<LoaderProps> = ({ onComplete, variant = 'full' }) => {
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-neon-fuchsia shadow-[0_0_8px_#e879f9] animate-pulse" />
                 <span className="text-[10px] font-mono tracking-[0.2em] text-neon-fuchsia font-bold uppercase">
-                  {steps[activeStep].text}
+                  {STEPS[activeStep].text}
                 </span>
               </motion.div>
             </AnimatePresence>
@@ -177,7 +180,7 @@ const Loader: React.FC<LoaderProps> = ({ onComplete, variant = 'full' }) => {
             <motion.div
               className="h-full bg-gradient-to-r from-neon-violet via-neon-fuchsia to-neon-violet bg-[length:200%_100%] rounded-full shadow-[0_0_15px_rgba(124,58,237,0.5)]"
               animate={{
-                width: `${((activeStep + 1) / steps.length) * 100}%`,
+                width: `${((activeStep + 1) / STEPS.length) * 100}%`,
                 backgroundPosition: ['0% 0%', '100% 0%']
               }}
               transition={{
@@ -198,7 +201,7 @@ const Loader: React.FC<LoaderProps> = ({ onComplete, variant = 'full' }) => {
               ))}
             </div>
             <span className="text-[12px] font-mono text-white tracking-widest font-bold tabular-nums">
-              <span className="text-white/40">LOAD_STAT:</span> {Math.round(((activeStep + 1) / steps.length) * 100)}%
+              <span className="text-white/40">LOAD_STAT:</span> {Math.round(((activeStep + 1) / STEPS.length) * 100)}%
             </span>
           </div>
         </div>
@@ -208,4 +211,3 @@ const Loader: React.FC<LoaderProps> = ({ onComplete, variant = 'full' }) => {
 };
 
 export default Loader;
-

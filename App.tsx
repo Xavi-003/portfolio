@@ -11,7 +11,7 @@ import CustomCursor from './components/CustomCursor';
 const Projects = lazy(() => import('./components/Projects'));
 const Skills = lazy(() => import('./components/Skills'));
 const AIChat = lazy(() => import('./components/AIChat'));
-import { Database, Server, Shield, Zap, Cpu, MessageCircle, Gamepad2 } from 'lucide-react';
+import { MessageCircle, Gamepad2 } from 'lucide-react';
 import ErrorBoundary from './components/ErrorBoundary';
 import { InstallPWA } from './components/InstallPWA';
 

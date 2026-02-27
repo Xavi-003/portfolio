@@ -30,6 +30,10 @@ interface Log {
   vy: number;
 }
 
+// Caps to prevent unbounded array growth (memory leak fix)
+const MAX_PACKETS = 50;
+const MAX_LOGS = 30;
+
 const NetworkBackground: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -39,6 +43,7 @@ const NetworkBackground: React.FC = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    let animFrameId: number;
     let width = canvas.width = window.innerWidth;
     let height = canvas.height = window.innerHeight;
 
@@ -79,7 +84,7 @@ const NetworkBackground: React.FC = () => {
             id: i,
             x: Math.random() * width,
             y: Math.random() * height,
-            vx: (Math.random() - 0.5) * 0.2, // Slow drift
+            vx: (Math.random() - 0.5) * 0.2,
             vy: (Math.random() - 0.5) * 0.2,
             type,
             label,
@@ -89,34 +94,40 @@ const NetworkBackground: React.FC = () => {
 
     // Drawing Helpers
     const drawDatabase = (x: number, y: number, r: number, color: string) => {
-        ctx.fillStyle = color;
-        ctx.strokeStyle = color;
-        ctx.lineWidth = 2;
-        
-        // Cylinder body
         const h = r * 1.2;
         const w = r * 1.6;
         
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+
+        // Top ellipse (filled)
         ctx.beginPath();
-        ctx.ellipse(x, y - h/2, w/2, r/3, 0, 0, Math.PI * 2);
+        ctx.ellipse(x, y - h / 2, w / 2, r / 3, 0, 0, Math.PI * 2);
+        ctx.fillStyle = `${color}22`;
         ctx.fill();
         ctx.stroke();
 
+        // Cylinder body (two vertical lines + bottom ellipse)
         ctx.beginPath();
-        ctx.ellipse(x, y + h/2, w/2, r/3, 0, 0, Math.PI); // Bottom curve
-        ctx.ellipse(x, y - h/2, w/2, r/3, 0, 0, Math.PI); // Top hidden curve
-        ctx.lineTo(x + w/2, y + h/2);
-        ctx.lineTo(x + w/2, y - h/2);
-        ctx.moveTo(x - w/2, y + h/2);
-        ctx.lineTo(x - w/2, y - h/2);
-        
-        ctx.fillStyle = `${color}22`; // Low opacity fill
+        ctx.moveTo(x - w / 2, y - h / 2);
+        ctx.lineTo(x - w / 2, y + h / 2);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(x + w / 2, y - h / 2);
+        ctx.lineTo(x + w / 2, y + h / 2);
+        ctx.stroke();
+
+        // Bottom ellipse
+        ctx.beginPath();
+        ctx.ellipse(x, y + h / 2, w / 2, r / 3, 0, 0, Math.PI * 2);
+        ctx.fillStyle = `${color}22`;
         ctx.fill();
         ctx.stroke();
-        
-        // Disks
+
+        // Middle disk line
         ctx.beginPath();
-        ctx.ellipse(x, y, w/2, r/3, 0, 0, Math.PI);
+        ctx.ellipse(x, y, w / 2, r / 3, 0, 0, Math.PI);
         ctx.stroke();
     };
 
@@ -138,7 +149,7 @@ const NetworkBackground: React.FC = () => {
         
         // Inner detail
         ctx.beginPath();
-        ctx.arc(x, y, r/2, 0, Math.PI * 2);
+        ctx.arc(x, y, r / 2, 0, Math.PI * 2);
         ctx.stroke();
     };
 
@@ -150,43 +161,39 @@ const NetworkBackground: React.FC = () => {
         
         // Main Box
         ctx.beginPath();
-        ctx.rect(x - s/2, y - s/2, s, s);
+        ctx.rect(x - s / 2, y - s / 2, s, s);
         ctx.fill();
         ctx.stroke();
         
         // Server Rack Lines
         ctx.beginPath();
-        ctx.moveTo(x - s/2 + 5, y - s/6);
-        ctx.lineTo(x + s/2 - 5, y - s/6);
-        ctx.moveTo(x - s/2 + 5, y + s/6);
-        ctx.lineTo(x + s/2 - 5, y + s/6);
+        ctx.moveTo(x - s / 2 + 5, y - s / 6);
+        ctx.lineTo(x + s / 2 - 5, y - s / 6);
+        ctx.moveTo(x - s / 2 + 5, y + s / 6);
+        ctx.lineTo(x + s / 2 - 5, y + s / 6);
         ctx.stroke();
         
         // Status Lights
-        ctx.fillStyle = '#10b981'; // Green light
+        ctx.fillStyle = '#10b981';
         ctx.beginPath();
-        ctx.arc(x + s/2 - 10, y - s/2 + 10, 2, 0, Math.PI * 2);
+        ctx.arc(x + s / 2 - 10, y - s / 2 + 10, 2, 0, Math.PI * 2);
         ctx.fill();
     };
 
     // Animation Loop
-    let lastTime = 0;
-    const render = (time: number) => {
-        const dt = time - lastTime;
-        lastTime = time;
-
+    const render = () => {
         // Clear with transparency to allow CSS background to show through
         ctx.clearRect(0, 0, width, height);
 
         // Move Nodes
-        nodes.forEach(node => {
+        for (const node of nodes) {
             node.x += node.vx;
             node.y += node.vy;
             
             // Bounce
             if (node.x < node.radius + 20 || node.x > width - node.radius - 20) node.vx *= -1;
             if (node.y < node.radius + 20 || node.y > height - node.radius - 20) node.vy *= -1;
-        });
+        }
 
         // Draw Connections & Packets
         ctx.lineWidth = 1;
@@ -203,18 +210,18 @@ const NetworkBackground: React.FC = () => {
                     const opacity = 1 - (dist / CONNECTION_DIST);
                     
                     // Draw Line
-                    ctx.strokeStyle = `rgba(124, 58, 237, ${opacity * 0.4})`; // Violet
+                    ctx.strokeStyle = `rgba(124, 58, 237, ${opacity * 0.4})`;
                     ctx.beginPath();
                     ctx.moveTo(n1.x, n1.y);
                     ctx.lineTo(n2.x, n2.y);
                     ctx.stroke();
 
-                    // Randomly spawn packet
-                    if (Math.random() < 0.008) {
-                        let color = '#ffffff'; // Default HTTP
-                        if (n2.type === 'DB' || n1.type === 'DB') color = '#06b6d4'; // Cyan SQL
-                        else if (n1.type === 'GATEWAY' || n2.type === 'GATEWAY') color = '#facc15'; // Yellow Gateway
-                        else if (Math.random() > 0.5) color = '#e879f9'; // Fuchsia Internal
+                    // Randomly spawn packet (only if under cap)
+                    if (packets.length < MAX_PACKETS && Math.random() < 0.008) {
+                        let color = '#ffffff';
+                        if (n2.type === 'DB' || n1.type === 'DB') color = '#06b6d4';
+                        else if (n1.type === 'GATEWAY' || n2.type === 'GATEWAY') color = '#facc15';
+                        else if (Math.random() > 0.5) color = '#e879f9';
 
                         packets.push({
                             fromX: n1.x, fromY: n1.y,
@@ -228,15 +235,15 @@ const NetworkBackground: React.FC = () => {
             }
         }
 
-        // Draw & Update Packets
-        for (let i = packets.length - 1; i >= 0; i--) {
-            const p = packets[i];
+        // Draw & Update Packets — use filter instead of splice (O(n) splice per item is O(n²))
+        const newLogs: Log[] = [];
+        packets = packets.filter(p => {
             p.progress += p.speed;
             
             const currX = p.fromX + (p.toX - p.fromX) * p.progress;
             const currY = p.fromY + (p.toY - p.fromY) * p.progress;
 
-            // Draw Packet (Square data block)
+            // Draw Packet
             ctx.fillStyle = p.color;
             ctx.shadowBlur = 8;
             ctx.shadowColor = p.color;
@@ -245,47 +252,51 @@ const NetworkBackground: React.FC = () => {
 
             // Reach Destination
             if (p.progress >= 1) {
-                packets.splice(i, 1);
-                
-                // Spawn Log
-                let logText = 'ACK';
-                let logColor = '#4ade80'; // Green
-                
-                if (p.color === '#06b6d4') { // DB Color
-                    logText = DB_OPS[Math.floor(Math.random() * DB_OPS.length)];
-                    logColor = '#22d3ee';
-                } else if (p.color === '#facc15') { // Gateway
-                    logText = `REQ: ${ENDPOINTS[Math.floor(Math.random() * ENDPOINTS.length)]}`;
-                    logColor = '#facc15';
-                } else {
-                    if (Math.random() > 0.6) {
-                        const method = HTTP_METHODS[Math.floor(Math.random() * HTTP_METHODS.length)];
-                        logText = `${method}`;
-                        logColor = '#e879f9';
+                // Spawn Log (only if under cap)
+                if (logs.length + newLogs.length < MAX_LOGS) {
+                    let logText = 'ACK';
+                    let logColor = '#4ade80';
+                    
+                    if (p.color === '#06b6d4') {
+                        logText = DB_OPS[Math.floor(Math.random() * DB_OPS.length)];
+                        logColor = '#22d3ee';
+                    } else if (p.color === '#facc15') {
+                        logText = `REQ: ${ENDPOINTS[Math.floor(Math.random() * ENDPOINTS.length)]}`;
+                        logColor = '#facc15';
                     } else {
-                        logText = STATUS_CODES[Math.floor(Math.random() * STATUS_CODES.length)];
+                        if (Math.random() > 0.6) {
+                            logText = HTTP_METHODS[Math.floor(Math.random() * HTTP_METHODS.length)];
+                            logColor = '#e879f9';
+                        } else {
+                            logText = STATUS_CODES[Math.floor(Math.random() * STATUS_CODES.length)];
+                        }
                     }
-                }
 
-                logs.push({
-                    x: currX,
-                    y: currY,
-                    text: logText,
-                    life: 1.0,
-                    color: logColor,
-                    vy: -0.5 - Math.random() * 0.5
-                });
+                    newLogs.push({
+                        x: currX,
+                        y: currY,
+                        text: logText,
+                        life: 1.0,
+                        color: logColor,
+                        vy: -0.5 - Math.random() * 0.5
+                    });
+                }
+                return false; // Remove this packet
             }
-        }
+            return true; // Keep this packet
+        });
+
+        // Add new logs
+        logs.push(...newLogs);
 
         // Draw Nodes
-        nodes.forEach(node => {
+        for (const node of nodes) {
             if (node.type === 'DB') {
-                drawDatabase(node.x, node.y, node.radius, '#06b6d4'); // Cyan
+                drawDatabase(node.x, node.y, node.radius, '#06b6d4');
             } else if (node.type === 'GATEWAY') {
-                drawHexagon(node.x, node.y, node.radius, '#facc15'); // Yellow
+                drawHexagon(node.x, node.y, node.radius, '#facc15');
             } else {
-                drawServerBox(node.x, node.y, node.radius, '#c084fc'); // Purple
+                drawServerBox(node.x, node.y, node.radius, '#c084fc');
             }
 
             // Label
@@ -293,30 +304,27 @@ const NetworkBackground: React.FC = () => {
             ctx.font = '11px "JetBrains Mono", monospace';
             ctx.textAlign = 'center';
             ctx.fillText(node.label, node.x, node.y + node.radius + 18);
-        });
+        }
 
-        // Draw & Update Logs
+        // Draw & Update Logs — use filter instead of splice
         ctx.font = 'bold 13px "JetBrains Mono", monospace';
-        for (let i = logs.length - 1; i >= 0; i--) {
-            const l = logs[i];
+        logs = logs.filter(l => {
             l.life -= 0.01;
             l.y += l.vy;
             
-            if (l.life <= 0) {
-                logs.splice(i, 1);
-                continue;
-            }
+            if (l.life <= 0) return false;
 
             ctx.fillStyle = l.color;
             ctx.globalAlpha = l.life;
             ctx.fillText(`> ${l.text}`, l.x, l.y - 25);
             ctx.globalAlpha = 1;
-        }
+            return true;
+        });
 
-        requestAnimationFrame(render);
+        animFrameId = requestAnimationFrame(render);
     };
 
-    requestAnimationFrame(render);
+    animFrameId = requestAnimationFrame(render);
 
     const handleResize = () => {
         width = canvas.width = window.innerWidth;
@@ -324,7 +332,15 @@ const NetworkBackground: React.FC = () => {
     };
 
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+
+    // Cleanup: cancel animation frame AND remove event listener
+    return () => {
+        cancelAnimationFrame(animFrameId);
+        window.removeEventListener('resize', handleResize);
+        // Clear arrays to help GC
+        packets = [];
+        logs = [];
+    };
   }, []);
 
   return (
