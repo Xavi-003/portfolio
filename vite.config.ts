@@ -49,6 +49,17 @@ export default defineConfig(({ mode }) => {
         '@': path.resolve(__dirname, '.'),
       }
     },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'react-vendor': ['react', 'react-dom'],
+            'framer':       ['framer-motion'],
+            'icons':        ['lucide-react'],
+          }
+        }
+      }
+    },
     define: {
       'import.meta.env.VITE_GEMINI_API_KEY': JSON.stringify(process.env.VITE_GEMINI_API_KEY),
     }

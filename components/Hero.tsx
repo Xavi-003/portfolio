@@ -95,7 +95,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
             onClick={() => onNavigate('projects')}
             className="group w-full sm:w-auto justify-center relative px-8 py-3 sm:py-4 bg-white text-black font-bold rounded-full overflow-hidden flex items-center gap-2 transition-all hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(255,255,255,0.5)] z-30"
           >
-            <span className="relative z-10">View Projects</span>
+            <span className="relative z-10 text-black font-bold">View Projects</span>
             <ArrowRight className="relative z-10 w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </button>
 
