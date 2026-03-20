@@ -25,6 +25,16 @@ import Loader from "./components/Loader";
 function App() {
   const [view, setView] = useState<ViewState>("hero");
   const [loading, setLoading] = useState(true);
+  const [loadExtras, setLoadExtras] = useState(false);
+
+  useEffect(() => {
+    if (!loading) {
+      const timer = setTimeout(() => {
+        setLoadExtras(true);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [loading]);
 
   return (
     <>
@@ -34,10 +44,12 @@ function App() {
 
       {!loading && (
         <div className="relative w-full min-h-screen overflow-x-hidden overflow-y-auto font-sans text-white selection:bg-neon-violet selection:text-white">
-          <Suspense fallback={null}>
-            <CustomCursor />
-            <InstallPWA />
-          </Suspense>
+          {loadExtras && (
+            <Suspense fallback={null}>
+              <CustomCursor />
+              <InstallPWA />
+            </Suspense>
+          )}
 
           {/* The Background Visual */}
           <MorphingBackground view={view} />
