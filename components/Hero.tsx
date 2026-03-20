@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowRight, Terminal, FileText } from 'lucide-react';
-import { ViewState } from '../types';
-import NetworkBackground from './NetworkBackground';
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { ArrowRight, Terminal, FileText } from "lucide-react";
+import { ViewState } from "../types";
+import NetworkBackground from "./NetworkBackground";
 
 interface HeroProps {
   onNavigate: (view: ViewState) => void;
@@ -53,7 +53,9 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-purple opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-neon-fuchsia"></span>
           </span>
-          <span className="text-xs font-mono text-neon-fuchsia tracking-widest uppercase font-bold">Senior Full Stack Developer</span>
+          <span className="text-xs font-mono text-neon-fuchsia tracking-widest uppercase font-bold">
+            Senior Full Stack Developer
+          </span>
         </motion.div>
 
         {/* Main Title with Typing Effect */}
@@ -67,7 +69,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                 duration: 0.8,
                 repeat: Infinity,
                 repeatType: "reverse",
-                ease: "linear"
+                ease: "linear",
               }}
               className="inline-block w-2 h-10 md:w-4 md:h-20 bg-neon-purple ml-2 shadow-[0_0_15px_rgba(176,38,255,0.8)] align-middle"
             />
@@ -80,8 +82,14 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
         >
-          Designing high-performance distributed systems and fluid user interfaces.
-          <br className="hidden sm:block" />Specializing in <span className="text-neon-fuchsia font-bold">React</span>, <span className="text-neon-violet font-bold">Node.js</span>, and <span className="text-white font-bold">Cloud Native</span> Architecture.
+          Designing high-performance distributed systems and fluid user
+          interfaces.
+          <br className="hidden sm:block" />
+          Specializing in{" "}
+          <span className="text-neon-fuchsia font-bold">React</span>,{" "}
+          <span className="text-neon-violet font-bold">Node.js</span>, and{" "}
+          <span className="text-white font-bold">Cloud Native</span>{" "}
+          Architecture.
         </motion.p>
 
         {/* CTA Buttons */}
@@ -92,15 +100,17 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
           transition={{ delay: 1.4 }}
         >
           <button
-            onClick={() => onNavigate('projects')}
+            onClick={() => onNavigate("projects")}
             className="group w-full sm:w-auto justify-center relative px-8 py-3 sm:py-4 bg-white text-black font-bold rounded-full overflow-hidden flex items-center gap-2 transition-all hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(255,255,255,0.5)] z-30"
           >
-            <span className="relative z-10 text-black font-bold">View Projects</span>
+            <span className="relative z-10 text-black font-bold">
+              View Projects
+            </span>
             <ArrowRight className="relative z-10 w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </button>
 
           <button
-            onClick={() => onNavigate('contact')}
+            onClick={() => onNavigate("contact")}
             className="w-full sm:w-auto justify-center px-8 py-3 sm:py-4 border border-white/20 bg-black/40 backdrop-blur-md rounded-full hover:bg-white/10 hover:border-neon-purple/50 transition-all text-white hover:text-neon-purple shadow-lg flex items-center gap-2 z-30"
           >
             <Terminal size={18} />
