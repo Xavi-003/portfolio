@@ -50,12 +50,18 @@ export default defineConfig(({ mode }) => {
       }
     },
     build: {
+      chunkSizeWarningLimit: 800,
+      modulePreload: {
+        polyfill: true
+      },
       rollupOptions: {
         output: {
           manualChunks: {
             'react-vendor': ['react', 'react-dom'],
             'framer':       ['framer-motion'],
             'icons':        ['lucide-react'],
+            'charts':       ['recharts'],
+            'ai-sdk':       ['@google/genai'],
           }
         }
       }

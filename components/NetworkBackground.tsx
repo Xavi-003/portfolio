@@ -44,11 +44,18 @@ const NetworkBackground: React.FC = () => {
     if (!ctx) return;
 
     let animFrameId: number;
-    let width = canvas.width = window.innerWidth;
-    let height = canvas.height = window.innerHeight;
+    // Read dimensions once outside rAF to avoid forced reflow in animation loop
+    let width = 0;
+    let height = 0;
+
+    const updateSize = () => {
+      width = canvas.width = canvas.offsetWidth || window.innerWidth;
+      height = canvas.height = canvas.offsetHeight || window.innerHeight;
+    };
+    updateSize();
 
     // Configuration
-    const NODE_COUNT = window.innerWidth < 768 ? 6 : 12;
+    const NODE_COUNT = width < 768 ? 6 : 12;
     const CONNECTION_DIST = Math.min(width, height) * 0.35;
     const CONNECTION_DIST_SQ = CONNECTION_DIST * CONNECTION_DIST;
     
@@ -326,17 +333,19 @@ const NetworkBackground: React.FC = () => {
 
     animFrameId = requestAnimationFrame(render);
 
-    const handleResize = () => {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-    };
+    // Use ResizeObserver to batch resize reads outside the animation loop
+    let resizeRaf: number;
+    const resizeObserver = new ResizeObserver(() => {
+      cancelAnimationFrame(resizeRaf);
+      resizeRaf = requestAnimationFrame(updateSize);
+    });
+    resizeObserver.observe(canvas);
 
-    window.addEventListener('resize', handleResize);
-
-    // Cleanup: cancel animation frame AND remove event listener
+    // Cleanup: cancel animation frame AND disconnect observer
     return () => {
         cancelAnimationFrame(animFrameId);
-        window.removeEventListener('resize', handleResize);
+        cancelAnimationFrame(resizeRaf);
+        resizeObserver.disconnect();
         // Clear arrays to help GC
         packets = [];
         logs = [];
