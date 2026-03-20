@@ -30,6 +30,14 @@ const projects: Project[] = [
   },
 
   {
+    id: 4,
+    title: "Vortex",
+    category: "P2P Chat / WebRTC",
+    image: "", // Custom visual
+    description: "A premium, end-to-end encrypted P2P chat application. Built with WebRTC and a hybrid signaling approach for seamless auto-reconnection, featuring a modern, dark-themed UI inspired by WhatsApp Web.",
+    tech: ["WebRTC", "Node.js", "Socket.io", "JavaScript"]
+  },
+  {
     id: 5,
     title: "Mini Games Arcade",
     category: "Web App / Gaming",
@@ -161,6 +169,80 @@ const BotVisual = React.memo(() => {
 
 BotVisual.displayName = 'BotVisual';
 
+const ChatVisual = React.memo(() => {
+  const messages = [
+    { from: 'peer', text: 'Hey! Connected 🔒', time: '10:41' },
+    { from: 'self', text: 'WebRTC P2P — no server!', time: '10:41' },
+    { from: 'peer', text: 'End-to-end encrypted ✅', time: '10:42' },
+    { from: 'self', text: 'Auto-reconnect works 🔄', time: '10:42' },
+  ];
+
+  return (
+    <div className="w-full h-full bg-[#0b0f1a] relative overflow-hidden flex flex-col" style={{ willChange: 'transform' }}>
+      {/* Header */}
+      <div className="flex items-center gap-3 px-4 py-3 border-b border-white/5 bg-white/3">
+        <div className="relative">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-white text-xs font-bold">P2</div>
+          <motion.div
+            className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-[#0b0f1a]"
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          />
+        </div>
+        <div>
+          <div className="text-white text-xs font-semibold">Peer Connection</div>
+          <div className="text-emerald-400 text-[10px] font-mono">● P2P Active</div>
+        </div>
+        <div className="ml-auto px-2 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30">
+          <span className="text-emerald-400 font-mono text-[9px]">🔒 E2EE</span>
+        </div>
+      </div>
+
+      {/* Messages */}
+      <div className="flex-1 flex flex-col justify-end gap-2 px-4 py-3 overflow-hidden">
+        {messages.map((msg, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 10, x: msg.from === 'self' ? 10 : -10 }}
+            animate={{ opacity: 1, y: 0, x: 0 }}
+            transition={{ delay: i * 0.6, duration: 0.4, ease: 'easeOut', repeat: Infinity, repeatDelay: messages.length * 0.6 + 1 }}
+            className={`flex ${msg.from === 'self' ? 'justify-end' : 'justify-start'}`}
+          >
+            <div className={`max-w-[75%] px-3 py-1.5 rounded-xl text-[11px] font-mono ${
+              msg.from === 'self'
+                ? 'bg-emerald-600/80 text-white rounded-br-sm'
+                : 'bg-white/8 text-gray-200 border border-white/10 rounded-bl-sm'
+            }`}>
+              {msg.text}
+              <span className="block text-right text-[9px] opacity-50 mt-0.5">{msg.time}</span>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* WebRTC pulse badge */}
+      <motion.div
+        className="absolute top-3 right-12 flex items-center gap-1"
+        animate={{ opacity: [0.4, 1, 0.4] }}
+        transition={{ duration: 2.5, repeat: Infinity }}
+      >
+        <div className="w-1.5 h-1.5 rounded-full bg-teal-400" />
+        <span className="text-teal-400 font-mono text-[9px]">WebRTC</span>
+      </motion.div>
+
+      {/* Input bar */}
+      <div className="flex items-center gap-2 px-4 py-2 border-t border-white/5">
+        <div className="flex-1 h-7 rounded-full bg-white/5 border border-white/10" />
+        <div className="w-7 h-7 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
+          <ArrowUpRight size={12} className="text-emerald-400" />
+        </div>
+      </div>
+    </div>
+  );
+});
+
+ChatVisual.displayName = 'ChatVisual';
+
 const GameVisual = React.memo(() => {
   // Tic-Tac-Toe Grid State Animation
   const [board, setBoard] = useState(Array(9).fill(null));
@@ -236,6 +318,9 @@ const StaticPlaceholder: React.FC<{ id: number }> = React.memo(({ id }) => {
     2: <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900" />,
     3: <div className="w-full h-full bg-gradient-to-br from-blue-900/30 to-cyan-900/30 flex items-center justify-center">
       <div className="text-white/50 font-mono text-sm">BOT</div>
+    </div>,
+    4: <div className="w-full h-full bg-gradient-to-br from-emerald-900/30 to-teal-900/30 flex items-center justify-center">
+      <div className="text-white/50 font-mono text-sm">P2P</div>
     </div>,
 
   };
@@ -350,6 +435,8 @@ const ProjectCard: React.FC<ProjectCardProps> = React.memo(({ project, onClick, 
               <TradingChartVisual />
             ) : project.id === 3 ? (
               <BotVisual />
+            ) : project.id === 4 ? (
+              <ChatVisual />
             ) : project.id === 5 ? (
               <GameVisual />
             ) : (
@@ -625,6 +712,8 @@ const Projects: React.FC = () => {
                           <TradingChartVisual />
                         ) : project.id === 3 ? (
                           <BotVisual />
+                        ) : project.id === 4 ? (
+                          <ChatVisual />
                         ) : project.id === 5 ? (
                           <GameVisual />
                         ) : (
@@ -702,10 +791,20 @@ const Projects: React.FC = () => {
                         className="flex flex-col sm:flex-row gap-4 mt-auto"
                         variants={itemVariants}
                       >
-                        <a href={project.id === 5 ? "https://xavi-003.github.io/mini_game/" : "#"} target={project.id === 5 ? "_blank" : "_self"} rel={project.id === 5 ? "noopener noreferrer" : ""} className="flex-1 py-4 bg-white text-black rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-neon-purple hover:text-white transition-all shadow-lg hover:shadow-neon-purple/30 group relative overflow-hidden">
+                        <a
+                          href={project.id === 4 ? "https://xavi-003.github.io/web_chat/" : project.id === 5 ? "https://xavi-003.github.io/mini_game/" : "#"}
+                          target={project.id === 4 || project.id === 5 ? "_blank" : "_self"}
+                          rel={project.id === 4 || project.id === 5 ? "noopener noreferrer" : ""}
+                          className="flex-1 py-4 bg-white text-black rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-neon-purple hover:text-white transition-all shadow-lg hover:shadow-neon-purple/30 group relative overflow-hidden"
+                        >
                           <span className="relative z-10 flex items-center gap-2"><ExternalLink size={20} className="group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" /> Live Demo</span>
                         </a>
-                        <a href={project.id === 5 ? "https://github.com/Xavi-003/mini_game" : "#"} target={project.id === 5 ? "_blank" : "_self"} rel={project.id === 5 ? "noopener noreferrer" : ""} className="flex-1 py-4 border border-white/20 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-white/10 transition-colors text-white hover:border-white/40">
+                        <a
+                          href={project.id === 4 ? "https://github.com/Xavi-003/web_chat" : project.id === 5 ? "https://github.com/Xavi-003/mini_game" : "#"}
+                          target={project.id === 4 || project.id === 5 ? "_blank" : "_self"}
+                          rel={project.id === 4 || project.id === 5 ? "noopener noreferrer" : ""}
+                          className="flex-1 py-4 border border-white/20 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-white/10 transition-colors text-white hover:border-white/40"
+                        >
                           <Github size={20} /> Codebase
                         </a>
                       </motion.div>
