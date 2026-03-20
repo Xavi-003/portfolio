@@ -85,8 +85,13 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       chunkSizeWarningLimit: 800,
-      modulePreload: {
-        polyfill: true,
+      modulePreload: false,
+      minify: "terser",
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true,
+        },
       },
       rollupOptions: {
         output: {

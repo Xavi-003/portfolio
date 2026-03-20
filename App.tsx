@@ -60,9 +60,9 @@ function App() {
               {view === "hero" && (
                 <motion.div
                   key="hero"
-                  initial={{ opacity: 0, filter: "blur(20px)", scale: 0.95 }}
-                  animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
-                  exit={{ opacity: 0, filter: "blur(10px)", scale: 1.05 }}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 1.05 }}
                   transition={{ duration: 0.6 }}
                 >
                   <Hero onNavigate={setView} />
