@@ -12,6 +12,20 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   const fullText = "Architecting The Future";
   const [isTyping, setIsTyping] = useState(true);
 
+  const getCharGradient = (index: number) => {
+    const gradients = [
+      'from-cyan-400 to-blue-500',
+      'from-fuchsia-400 to-pink-500',
+      'from-violet-400 to-purple-600',
+      'from-emerald-400 to-teal-500',
+      'from-amber-400 to-orange-500',
+      'from-rose-400 to-red-500',
+      'from-teal-400 to-cyan-500',
+      'from-sky-400 to-indigo-500'
+    ];
+    return gradients[index % gradients.length];
+  };
+
   useEffect(() => {
     let i = 0;
     const timer = setInterval(() => {
@@ -87,20 +101,51 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
           </motion.div>
 
           {/* Main Title with Typing Effect */}
-          <div className="min-h-[60px] sm:min-h-[80px] md:min-h-[128px] mb-4 sm:mb-6 flex items-center justify-center px-2">
-            <h1 className="text-4xl sm:text-5xl md:text-8xl font-display font-bold leading-tight tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-purple-200 flex items-center drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">
-              {text}
-              <motion.span
-                aria-hidden="true"
-                animate={{ opacity: [1, 0] }}
-                transition={{
-                  duration: 0.8,
-                  repeat: Infinity,
-                  repeatType: "reverse",
-                  ease: "linear",
-                }}
-                className="inline-block w-2 h-10 md:w-4 md:h-20 bg-neon-purple ml-2 shadow-[0_0_15px_rgba(176,38,255,0.8)] align-middle"
-              />
+          <div className="min-h-[120px] sm:min-h-[160px] md:min-h-[256px] mb-4 sm:mb-6 flex flex-col justify-center items-center px-2">
+            <h1 className="text-4xl sm:text-5xl md:text-8xl font-display font-bold leading-tight tracking-tighter flex flex-col justify-center items-center drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)] text-center">
+              {/* Line 1: Architecting */}
+              <div className="flex items-center justify-center flex-wrap">
+                {text.slice(0, 12).split('').map((char, index) => (
+                  <span key={index} className={`bg-clip-text text-transparent bg-gradient-to-r ${getCharGradient(index)}`}>
+                    {char}
+                  </span>
+                ))}
+                {text.length <= 12 && (
+                  <motion.span
+                    aria-hidden="true"
+                    animate={{ opacity: [1, 0] }}
+                    transition={{
+                      duration: 0.8,
+                      repeat: Infinity,
+                      repeatType: "reverse",
+                      ease: "linear",
+                    }}
+                    className="inline-block w-1.5 h-8 md:w-3.5 md:h-16 bg-neon-purple ml-1 shadow-[0_0_12px_rgba(176,38,255,0.8)] align-middle shrink-0"
+                  />
+                )}
+              </div>
+
+              {/* Line 2: The Future */}
+              {text.length > 12 && (
+                <div className="flex items-center justify-center flex-wrap mt-1 md:mt-3">
+                  {text.slice(12).split('').map((char, index) => (
+                    <span key={index} className={`bg-clip-text text-transparent bg-gradient-to-r ${getCharGradient(index + 12)}`}>
+                      {char === ' ' ? '\u00A0' : char}
+                    </span>
+                  ))}
+                  <motion.span
+                    aria-hidden="true"
+                    animate={{ opacity: [1, 0] }}
+                    transition={{
+                      duration: 0.8,
+                      repeat: Infinity,
+                      repeatType: "reverse",
+                      ease: "linear",
+                    }}
+                    className="inline-block w-1.5 h-8 md:w-3.5 md:h-16 bg-neon-purple ml-1 shadow-[0_0_12px_rgba(176,38,255,0.8)] align-middle shrink-0"
+                  />
+                </div>
+              )}
             </h1>
           </div>
 

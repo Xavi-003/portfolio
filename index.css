@@ -31,3 +31,200 @@
   }
 }
 
+/* Register custom properties for smooth transitions of coordinates */
+@property --mouse-x {
+  syntax: "<length-percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+@property --mouse-y {
+  syntax: "<length-percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+
+/* Card border spotlight overlay */
+.project-card-border {
+  position: relative;
+}
+
+.project-card-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1.5px; /* Border thickness */
+  border-radius: 24px; /* Matches card rounded-3xl */
+  background: radial-gradient(
+    300px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    var(--glow-color, rgba(124, 58, 237, 0.4)) 0%,
+    transparent 80%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+  z-index: 15;
+}
+
+.project-card-border:hover::before {
+  opacity: 1;
+}
+
+/* Corporate mockup scroll animation */
+@keyframes auto-scroll-mockup {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(calc(-100% + 270px)); /* scrolls through content based on height */
+  }
+}
+
+.animate-auto-scroll {
+  animation: auto-scroll-mockup 18s ease-in-out infinite;
+}
+
+/* Native CSS Scroll-driven entry/exit animations */
+@media (prefers-reduced-motion: no-preference) {
+  @supports ((animation-timeline: view()) and (animation-range: entry)) {
+    @keyframes scroll-entry {
+      from {
+        opacity: 0;
+        transform: translateY(120px) scale(0.92) rotateX(12deg);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotateX(0);
+      }
+    }
+
+    .scroll-reveal-card {
+      animation: scroll-entry auto linear backwards;
+      animation-timeline: view();
+      animation-range: entry 10% cover 35%;
+      will-change: transform, opacity;
+    }
+  }
+}
+
+/* Custom Scrollbar for Modal content and text lists */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(124, 58, 237, 0.3);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(124, 58, 237, 0.5);
+}
+
+/* Modular Color cycling keyframes (animates color property only, letting classes use currentColor) */
+@keyframes cycle-all {
+  0%, 100% {
+    color: #22d3ee; /* Cyan */
+  }
+  12.5% {
+    color: #e879f9; /* Fuchsia */
+  }
+  25% {
+    color: #a78bfa; /* Violet */
+  }
+  37.5% {
+    color: #34d399; /* Emerald */
+  }
+  50% {
+    color: #fbbf24; /* Amber */
+  }
+  62.5% {
+    color: #fb7185; /* Rose */
+  }
+  75% {
+    color: #2dd4bf; /* Teal */
+  }
+  87.5% {
+    color: #38bdf8; /* Sky */
+  }
+}
+
+/* Text gradient flow animation (rainbow neon effect) */
+.animate-text-gradient {
+  background-image: linear-gradient(
+    to right,
+    #22d3ee, /* Cyan */
+    #e879f9, /* Fuchsia */
+    #a78bfa, /* Violet */
+    #34d399, /* Emerald */
+    #fbbf24, /* Amber */
+    #fb7185, /* Rose */
+    #2dd4bf, /* Teal */
+    #38bdf8, /* Sky */
+    #22d3ee  /* Loop back */
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: shift-gradient 6s linear infinite;
+}
+
+@keyframes shift-gradient {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.animate-glow-cycle-game {
+  animation: cycle-all 8s linear infinite;
+  border-color: color-mix(in srgb, currentColor 30%, transparent);
+  background-color: color-mix(in srgb, currentColor 10%, transparent);
+  box-shadow: 0 0 15px color-mix(in srgb, currentColor 20%, transparent);
+}
+
+.animate-glow-cycle-game:hover {
+  color: #fff !important;
+  background-color: #e879f9 !important;
+  border-color: #e879f9 !important;
+  box-shadow: 0 0 25px rgba(232, 121, 249, 0.5) !important;
+}
+
+.animate-glow-cycle-chat {
+  animation: cycle-all 8s linear infinite;
+  animation-delay: -4s; /* Starts offset by 4s (opposite spectrum) */
+  border-color: color-mix(in srgb, currentColor 30%, transparent);
+  background-color: color-mix(in srgb, currentColor 10%, transparent);
+  box-shadow: 0 0 15px color-mix(in srgb, currentColor 20%, transparent);
+}
+
+.animate-glow-cycle-chat:hover {
+  color: #fff !important;
+  background-color: #7c3aed !important;
+  border-color: #7c3aed !important;
+  box-shadow: 0 0 25px rgba(124, 58, 237, 0.5) !important;
+}
+
+.animate-glow-cycle-logo {
+  animation: cycle-all 8s linear infinite;
+  border-color: color-mix(in srgb, currentColor 25%, transparent);
+  box-shadow: 0 0 15px color-mix(in srgb, currentColor 15%, transparent);
+}
+
+.animate-glow-cycle-nav {
+  animation: cycle-all 8s linear infinite;
+  border-color: color-mix(in srgb, currentColor 40%, transparent);
+  background-color: color-mix(in srgb, currentColor 15%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, currentColor 30%, transparent);
+}
+
+.animate-char-glow {
+  animation: cycle-all 8s linear infinite;
+}

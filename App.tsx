@@ -18,7 +18,7 @@ const InstallPWA = lazy(() =>
   })),
 );
 
-import { MessageCircle, Gamepad2 } from "lucide-react";
+import { MessageCircle, Gamepad2, Github, Linkedin, BookOpen } from "lucide-react";
 import ErrorBoundary from "./components/ErrorBoundary";
 
 import Loader from "./components/Loader";
@@ -80,7 +80,7 @@ function App() {
                   transition={{ duration: 0.5 }}
                 >
                   <ErrorBoundary>
-                    <Suspense fallback={<Loader variant="spinner" />}>
+                    <Suspense fallback={null}>
                       <Projects />
                     </Suspense>
                   </ErrorBoundary>
@@ -96,7 +96,7 @@ function App() {
                   transition={{ duration: 0.5 }}
                 >
                   <ErrorBoundary>
-                    <Suspense fallback={<Loader variant="spinner" />}>
+                    <Suspense fallback={null}>
                       <Skills />
                     </Suspense>
                   </ErrorBoundary>
@@ -112,7 +112,7 @@ function App() {
                   transition={{ duration: 0.5 }}
                 >
                   <ErrorBoundary>
-                    <Suspense fallback={<Loader variant="spinner" />}>
+                    <Suspense fallback={null}>
                       <AIChat />
                     </Suspense>
                   </ErrorBoundary>
@@ -126,41 +126,63 @@ function App() {
 
           {/* Logo / Branding (Fixed) */}
           <div
-            className="fixed top-4 left-4 md:top-6 md:left-6 z-50 mix-blend-exclusion cursor-pointer"
+            className="fixed top-4 left-4 md:top-6 md:left-6 z-50 cursor-pointer group"
             onClick={() => setView("hero")}
           >
-            <span className="font-display font-bold text-lg md:text-xl tracking-tighter text-white">
-              Antony Xavier<span className="text-neon-fuchsia">.DEV</span>
-            </span>
+            <div className="relative flex items-center gap-2 px-3 py-1.5 rounded-full bg-neon-dark/50 backdrop-blur-md border animate-glow-cycle-logo transition-all duration-300">
+              <span className="font-display font-extrabold text-sm md:text-base tracking-wide flex items-center">
+                {"Antony Xavier".split("").map((char, index) => (
+                  <span
+                    key={index}
+                    style={{ animationDelay: `${index * -0.15}s` }}
+                    className="animate-char-glow inline-block"
+                  >
+                    {char === " " ? "\u00A0" : char}
+                  </span>
+                ))}
+              </span>
+              <span className="text-[10px] md:text-xs px-1.5 py-0.5 rounded bg-white/5 border border-current text-current font-mono font-bold transition-all duration-300">
+                DEV
+              </span>
+            </div>
           </div>
 
+
+
+
           {/* Social Links (Fixed) */}
-          <div className="fixed top-4 right-4 md:top-6 md:right-6 z-50 flex gap-3 md:gap-6 mix-blend-exclusion text-xs md:text-sm font-mono opacity-80 md:opacity-70">
+          <div className="fixed top-4 right-4 md:top-6 md:right-6 z-50 flex gap-2 md:gap-3">
             <a
               href="https://xavi-003.github.io/blog/"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-amber-400 transition-colors"
+              aria-label="View Blog"
+              className="w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center bg-amber-500/10 backdrop-blur-md border border-amber-500/30 text-amber-400 hover:bg-amber-400 hover:text-black hover:border-amber-400 hover:shadow-[0_0_20px_rgba(251,191,36,0.5)] transition-all duration-300 cursor-pointer"
             >
-              [BLOG]
+              <BookOpen size={18} />
             </a>
             <a
               href="https://www.linkedin.com/in/antony-xavier-4b5019333/"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-neon-violet transition-colors"
+              aria-label="View LinkedIn Profile"
+              className="w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center bg-sky-500/10 backdrop-blur-md border border-sky-500/30 text-sky-400 hover:bg-sky-400 hover:text-white hover:border-sky-400 hover:shadow-[0_0_20px_rgba(56,189,248,0.5)] transition-all duration-300 cursor-pointer"
             >
-              [LI]
+              <Linkedin size={18} />
             </a>
             <a
               href="https://github.com/Xavi-003/"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-neon-fuchsia transition-colors"
+              aria-label="View GitHub Profile"
+              className="w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white hover:text-black hover:border-white hover:shadow-[0_0_20px_rgba(255,255,255,0.4)] transition-all duration-300 cursor-pointer"
             >
-              [GH]
+              <Github size={18} />
             </a>
           </div>
+
+
+
 
           {/* Game Project Trigger */}
           <motion.button
@@ -168,7 +190,7 @@ function App() {
               window.open("https://xavi-003.github.io/mini_game/", "_blank")
             }
             aria-label="Play Mini Games Arcade"
-            className="fixed bottom-24 right-4 md:bottom-6 md:right-24 z-50 p-2 md:p-3 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 text-white hover:bg-neon-fuchsia hover:border-neon-fuchsia transition-all duration-300 group shadow-lg shadow-neon-fuchsia/10"
+            className="fixed bottom-24 right-4 md:bottom-6 md:right-24 z-50 p-2.5 md:p-3.5 rounded-full backdrop-blur-md border transition-all duration-300 group cursor-pointer animate-glow-cycle-game hover:bg-neon-fuchsia hover:text-white hover:border-neon-fuchsia hover:shadow-[0_0_25px_rgba(232,121,249,0.5)]"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             initial={{ opacity: 0, x: 20 }}
@@ -184,7 +206,7 @@ function App() {
                 ease: "easeInOut",
               }}
             >
-              <Gamepad2 size={24} aria-hidden="true" />
+              <Gamepad2 size={22} aria-hidden="true" />
             </motion.div>
           </motion.button>
 
@@ -195,7 +217,7 @@ function App() {
                 key="chat-trigger"
                 onClick={() => setView("contact")}
                 aria-label="Open AI Assistant Chat"
-                className="fixed bottom-36 right-4 md:bottom-6 md:right-6 z-50 p-2 md:p-3 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 text-white hover:bg-neon-violet hover:border-neon-violet transition-all duration-300 group shadow-lg shadow-neon-violet/10"
+                className="fixed bottom-36 right-4 md:bottom-6 md:right-6 z-50 p-2.5 md:p-3.5 rounded-full backdrop-blur-md border transition-all duration-300 group cursor-pointer animate-glow-cycle-chat hover:bg-neon-violet hover:text-white hover:border-neon-violet hover:shadow-[0_0_25px_rgba(124,58,237,0.5)]"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 initial={{ opacity: 0, x: 20, scale: 0 }}
@@ -211,7 +233,7 @@ function App() {
                     ease: "easeInOut",
                   }}
                 >
-                  <MessageCircle size={24} aria-hidden="true" />
+                  <MessageCircle size={22} aria-hidden="true" />
                 </motion.div>
               </motion.button>
             )}

@@ -22,7 +22,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, onChangeView }) =>
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.5, type: 'spring' }}
-        className="flex items-center gap-2 p-2 rounded-full bg-white/10 backdrop-blur-xl border border-white/10 shadow-2xl"
+        className="flex items-center gap-2 p-1.5 rounded-full bg-neon-dark/50 backdrop-blur-md border border-white/10 shadow-[0_0_15px_rgba(124,58,237,0.15)] hover:border-neon-violet/40 hover:shadow-[0_0_20px_rgba(124,58,237,0.3)] transition-all duration-300"
         role="tablist"
       >
         {navItems.map((item) => {
@@ -36,12 +36,12 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, onChangeView }) =>
               aria-label={`Navigate to ${item.label} section`}
               aria-selected={isActive}
               role="tab"
-              className="relative group flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300"
+              className="relative group flex items-center justify-center w-11 h-11 md:w-12 md:h-12 rounded-full transition-all duration-300 cursor-pointer"
             >
               {isActive && (
                 <motion.div
                   layoutId="activeNav"
-                  className="absolute inset-0 bg-neon-violet/40 rounded-full border border-neon-violet/50"
+                  className="absolute inset-0 rounded-full border animate-glow-cycle-nav"
                   transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
                 />
               )}
@@ -49,7 +49,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, onChangeView }) =>
               <Icon
                 size={20}
                 aria-hidden="true"
-                className={`relative z-10 transition-colors duration-300 ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-white'}`}
+                className={`relative z-10 transition-all duration-300 ${isActive ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.6)] scale-110' : 'text-gray-400 group-hover:text-white group-hover:scale-110'}`}
               />
 
               {/* Tooltip */}
