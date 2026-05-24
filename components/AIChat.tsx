@@ -36,11 +36,11 @@ const AIChat: React.FC = () => {
     };
 
     return (
-        <section className="min-h-screen w-full flex items-center justify-center px-4 py-20 relative z-10">
+        <section className="min-h-screen lg:h-screen w-full flex items-center justify-center px-4 py-8 lg:py-0 relative z-10">
             <motion.div
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                className="w-full max-w-3xl glass-panel rounded-3xl overflow-hidden flex flex-col h-[70vh] shadow-[0_0_80px_-20px_rgba(124,58,237,0.4)]"
+                className="w-full max-w-3xl glass-panel rounded-3xl overflow-hidden flex flex-col h-[70vh] lg:h-[75vh] lg:max-h-[620px] shadow-[0_0_80px_-20px_rgba(124,58,237,0.4)]"
             >
                 {/* Header */}
                 <div className="p-4 sm:p-6 border-b border-white/10 bg-[#0a0015]/80 flex items-center justify-between backdrop-blur-md">

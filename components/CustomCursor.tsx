@@ -1,45 +1,40 @@
-import React, { useEffect, useRef, useCallback } from 'react';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 
 const CustomCursor: React.FC = () => {
-  const cursorX = useMotionValue(-100);
-  const cursorY = useMotionValue(-100);
+  const cursorRef = useRef<HTMLDivElement>(null);
+  const labelRef = useRef<HTMLDivElement>(null);
 
-  // Smooth spring animation for the cursor
-  const springConfig = { damping: 25, stiffness: 700 };
-  const cursorXSpring = useSpring(cursorX, springConfig);
-  const cursorYSpring = useSpring(cursorY, springConfig);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
+  const [hoveredTag, setHoveredTag] = useState<string>('');
 
-  // Use refs instead of state for values that don't need to trigger re-renders
-  const isVisibleRef = useRef(false);
-  const [isVisible, setIsVisible] = React.useState(false);
-  const [isHovering, setIsHovering] = React.useState(false);
-  const [hoveredTag, setHoveredTag] = React.useState<string>('');
-
-  // Check for touch/coarse pointer device (more reliable than UA sniffing)
   const isTouchDevice = useRef(
     typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches
   );
 
   useEffect(() => {
-    // Skip entirely on touch devices
     if (isTouchDevice.current) return;
 
-    let animationFrameId: number;
+    let animationFrameId: number | null = null;
 
     const moveMouse = (e: MouseEvent) => {
-      // Ignore 0,0 coordinates to prevent jumps
       if (e.clientX === 0 && e.clientY === 0) return;
 
-      // Use requestAnimationFrame to throttle coordinate updates
-      cancelAnimationFrame(animationFrameId);
+      if (animationFrameId !== null) {
+        cancelAnimationFrame(animationFrameId);
+      }
+
+      // Schedule write inside requestAnimationFrame to align with monitor refresh rate
       animationFrameId = requestAnimationFrame(() => {
-        cursorX.set(e.clientX);
-        cursorY.set(e.clientY);
-        if (!isVisibleRef.current) {
-          isVisibleRef.current = true;
-          setIsVisible(true);
+        // Update coordinates directly in DOM to bypass React render cycle latency
+        if (cursorRef.current) {
+          cursorRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate3d(-50%, -50%, 0)`;
         }
+        if (labelRef.current) {
+          labelRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate3d(20px, 20px, 0)`;
+        }
+        setIsVisible(true);
       });
     };
 
@@ -49,7 +44,6 @@ const CustomCursor: React.FC = () => {
 
       const tagName = target.tagName.toLowerCase();
 
-      // Check if hovering over clickable elements
       const isClickable =
         tagName === 'a' ||
         tagName === 'button' ||
@@ -59,7 +53,7 @@ const CustomCursor: React.FC = () => {
 
       setIsHovering(isClickable);
 
-      // Set tag label
+      // Set tag label (infrequent state changes - only on boundary crosses)
       if (tagName === 'a' || target.closest('a')) setHoveredTag('<Link />');
       else if (tagName === 'button' || target.closest('button')) setHoveredTag('<Button />');
       else if (tagName === 'input' || tagName === 'textarea') setHoveredTag('<Input />');
@@ -72,53 +66,64 @@ const CustomCursor: React.FC = () => {
     document.addEventListener('mouseover', mouseOver, { passive: true });
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
+      if (animationFrameId !== null) {
+        cancelAnimationFrame(animationFrameId);
+      }
       document.removeEventListener('mousemove', moveMouse);
       document.removeEventListener('mouseover', mouseOver);
     };
-    // Fixed: removed isVisible from deps to prevent event listener re-registration
-  }, [cursorX, cursorY]);
+  }, []);
 
-  // Don't render on touch devices
   if (isTouchDevice.current) {
     return null;
   }
 
   return (
     <>
-      <motion.div
-        className={`fixed top-0 left-0 w-6 h-6 bg-white rounded-full pointer-events-none z-[9999] mix-blend-difference ${isVisible ? 'opacity-100' : 'opacity-0'}`}
+      {/* Outer Cursor Wrapper - Positioned Directly via JS transforms */}
+      <div
+        ref={cursorRef}
+        className={`fixed top-0 left-0 w-6 h-6 pointer-events-none z-[9999] mix-blend-difference transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
         style={{
-          x: cursorXSpring,
-          y: cursorYSpring,
-          translateX: '-50%',
-          translateY: '-50%',
-        }}
-        animate={{
-          scale: isHovering ? 2.5 : 1,
-        }}
-        transition={{
-          scale: { type: "spring", stiffness: 300, damping: 20 },
-          opacity: { duration: 0.2 }
-        }}
-      />
-
-      {/* Tag Label */}
-      <motion.div
-        className="fixed top-0 left-0 pointer-events-none z-[9999] px-2 py-1 bg-white/10 backdrop-blur-md rounded text-[10px] font-mono text-white whitespace-nowrap border border-white/20"
-        style={{
-          x: cursorXSpring,
-          y: cursorYSpring,
-          translateX: 20,
-          translateY: 20,
-        }}
-        animate={{
-          opacity: hoveredTag ? 1 : 0,
-          scale: hoveredTag ? 1 : 0.8,
+          willChange: 'transform',
+          transform: 'translate3d(-100px, -100px, 0)',
         }}
       >
-        {hoveredTag}
-      </motion.div>
+        {/* Inner scaling node - Animated on hover using Framer Motion */}
+        <motion.div
+          className="w-full h-full bg-white rounded-full"
+          animate={{
+            scale: isHovering ? 2.5 : 1,
+          }}
+          transition={{
+            type: 'spring',
+            stiffness: 400,
+            damping: 25,
+          }}
+        />
+      </div>
+
+      {/* Label Wrapper - Positioned Directly */}
+      <div
+        ref={labelRef}
+        className="fixed top-0 left-0 pointer-events-none z-[9999]"
+        style={{
+          willChange: 'transform',
+          transform: 'translate3d(-100px, -100px, 0)',
+        }}
+      >
+        {/* Inner Label content - Animated on appearance */}
+        <motion.div
+          className="px-2 py-1 bg-white/10 backdrop-blur-md rounded text-[10px] font-mono text-white whitespace-nowrap border border-white/20"
+          animate={{
+            opacity: hoveredTag ? 1 : 0,
+            scale: hoveredTag ? 1 : 0.8,
+          }}
+          transition={{ duration: 0.15 }}
+        >
+          {hoveredTag}
+        </motion.div>
+      </div>
     </>
   );
 };

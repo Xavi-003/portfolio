@@ -10,10 +10,10 @@ interface LoaderProps {
 
 // Moved outside component to avoid re-creation on every render
 const STEPS = [
-  { text: "CORE_SEC_INIT", delay: 200 },
-  { text: "VIRTUAL_DOM_MOUNT", delay: 300 },
-  { text: "NET_STACK_READY", delay: 250 },
-  { text: "PORTFOLIO_LOADED", delay: 150 }
+  { text: "CORE_SEC_INIT", delay: 100 },
+  { text: "VIRTUAL_DOM_MOUNT", delay: 150 },
+  { text: "NET_STACK_READY", delay: 120 },
+  { text: "PORTFOLIO_LOADED", delay: 80 }
 ];
 
 const Loader: React.FC<LoaderProps> = ({ onComplete, variant = 'full' }) => {

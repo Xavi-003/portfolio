@@ -91,24 +91,29 @@ const TradingChartVisual = React.memo(() => {
       <div className="flex-1 flex items-end justify-between gap-1 relative z-10 px-2">
         {candles.map((candle, i) => {
           return (
-            <motion.div
-              key={i}
-              initial={{ height: `${candle.height}%` }}
-              animate={{
-                height: [`${candle.height}%`, `${candle.height + 10}%`, `${candle.height - 5}%`, `${candle.height}%`],
-              }}
-              transition={{
-                duration: 3 + Math.random(),
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: i * 0.15
-              }}
-              className={`w-full rounded-sm relative opacity-80`}
-              style={{ backgroundColor: candle.isGreen ? '#4ade80' : '#f87171', willChange: 'transform' }}
-            >
-              {/* Wick */}
-              <div className={`absolute left-1/2 -translate-x-1/2 w-[1px] bg-current h-[120%] -top-[10%] opacity-50 ${candle.isGreen ? 'bg-green-400' : 'bg-red-400'}`} />
-            </motion.div>
+            <div key={i} className="w-full relative" style={{ height: `${candle.height}%` }}>
+              <motion.div
+                initial={{ scaleY: 1 }}
+                animate={{
+                  scaleY: [1, 1.15, 0.9, 1],
+                }}
+                transition={{
+                  duration: 3 + Math.random(),
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: i * 0.15
+                }}
+                className="w-full h-full rounded-sm relative opacity-80"
+                style={{
+                  backgroundColor: candle.isGreen ? '#4ade80' : '#f87171',
+                  transformOrigin: "bottom",
+                  willChange: 'transform'
+                }}
+              >
+                {/* Wick */}
+                <div className={`absolute left-1/2 -translate-x-1/2 w-[1px] bg-current h-[120%] -top-[10%] opacity-50 ${candle.isGreen ? 'bg-green-400' : 'bg-red-400'}`} />
+              </motion.div>
+            </div>
           )
         })}
       </div>
@@ -342,7 +347,8 @@ interface ProjectCardProps {
 
 const ProjectCard: React.FC<ProjectCardProps> = React.memo(({ project, onClick, onCenterClick, isActive, position }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const lastUpdateTime = useRef(0);
+  const rectRef = useRef<{ left: number; top: number; width: number; height: number } | null>(null);
+  const moveFrameId = useRef<number | null>(null);
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -355,32 +361,75 @@ const ProjectCard: React.FC<ProjectCardProps> = React.memo(({ project, onClick, 
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-5deg", "5deg"]);
 
   // Spotlight gradient - must be called at top level, not conditionally
-  const spotlightBackground = useTransform(
-    [x, y],
-    ([latestX, latestY]: [number, number]) => `radial-gradient(circle at ${latestX * 100 + 50}% ${latestY * 100 + 50}%, rgba(232, 121, 249, 0.3), transparent 60%)`
-  );
+  // Spotlight translations - moves a static GPU layer rather than calculating gradients on every frame
+  const spotlightX = useTransform(x, [-0.5, 0.5], [-200, 200]);
+  const spotlightY = useTransform(y, [-0.5, 0.5], [-225, 225]);
 
-  // Throttled mouse move
+  // Cache rect on mouse enter to avoid layout thrashing inside handleMouseMove
+  const handleMouseEnter = useCallback(() => {
+    if (ref.current) {
+      const rect = ref.current.getBoundingClientRect();
+      rectRef.current = {
+        left: rect.left,
+        top: rect.top,
+        width: rect.width,
+        height: rect.height
+      };
+    }
+  }, []);
+
+  // requestAnimationFrame throttled mouse move
   const handleMouseMove = useCallback((e: MouseEvent<HTMLDivElement>) => {
-    if (!isActive || !ref.current) return;
+    if (!isActive) return;
 
-    const now = Date.now();
-    if (now - lastUpdateTime.current < 16) return; // ~60fps throttle
-    lastUpdateTime.current = now;
+    if (!rectRef.current) {
+      if (ref.current) {
+        const rect = ref.current.getBoundingClientRect();
+        rectRef.current = {
+          left: rect.left,
+          top: rect.top,
+          width: rect.width,
+          height: rect.height
+        };
+      } else {
+        return;
+      }
+    }
 
-    const rect = ref.current.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-    const mouseX = (e.clientX - rect.left) / width - 0.5;
-    const mouseY = (e.clientY - rect.top) / height - 0.5;
-    x.set(mouseX);
-    y.set(mouseY);
+    if (moveFrameId.current !== null) {
+      cancelAnimationFrame(moveFrameId.current);
+    }
+
+    const { left, top, width, height } = rectRef.current;
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+
+    moveFrameId.current = requestAnimationFrame(() => {
+      const mouseX = (clientX - left) / width - 0.5;
+      const mouseY = (clientY - top) / height - 0.5;
+      x.set(mouseX);
+      y.set(mouseY);
+    });
   }, [isActive, x, y]);
 
   const handleMouseLeave = useCallback(() => {
+    if (moveFrameId.current !== null) {
+      cancelAnimationFrame(moveFrameId.current);
+      moveFrameId.current = null;
+    }
+    rectRef.current = null;
     x.set(0);
     y.set(0);
   }, [x, y]);
+
+  // Clean up RAF on unmount
+  useEffect(() => {
+    return () => {
+      if (moveFrameId.current !== null) {
+        cancelAnimationFrame(moveFrameId.current);
+      }
+    };
+  }, []);
 
   // Memoize variants
   const variants = useMemo(() => ({
@@ -399,6 +448,7 @@ const ProjectCard: React.FC<ProjectCardProps> = React.memo(({ project, onClick, 
       animate={position}
       variants={variants}
       transition={{ duration: 0.5, type: "spring", bounce: 0.15, stiffness: 200, damping: 25 }}
+      onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={isActive ? onClick : onCenterClick}
@@ -415,10 +465,18 @@ const ProjectCard: React.FC<ProjectCardProps> = React.memo(({ project, onClick, 
 
         {/* Spotlight - only for active */}
         {isActive && (
-          <motion.div
-            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-20 mix-blend-overlay"
-            style={{ background: spotlightBackground }}
-          />
+          <div
+            className="absolute inset-0 pointer-events-none z-20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center overflow-hidden"
+          >
+            <motion.div
+              className="w-[400px] h-[400px] rounded-full bg-[radial-gradient(circle,rgba(232,121,249,0.3)_0%,transparent_60%)] shrink-0"
+              style={{
+                x: spotlightX,
+                y: spotlightY,
+                willChange: "transform",
+              }}
+            />
+          </div>
         )}
 
         {/* Visual Content */}
@@ -429,8 +487,8 @@ const ProjectCard: React.FC<ProjectCardProps> = React.memo(({ project, onClick, 
         >
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0f0518] z-20" />
 
-          {/* Only render complex animations for center card */}
-          {isActive ? (
+          {/* Only render complex animations for active card on desktop */}
+          {(isActive && position !== 'static') ? (
             project.id === 1 ? (
               <TradingChartVisual />
             ) : project.id === 3 ? (
@@ -536,7 +594,7 @@ const Projects: React.FC = () => {
   }, [currentIndex]);
 
   return (
-    <section className="w-full flex flex-col items-center justify-center px-4 pt-16 pb-4 md:pt-[5rem] md:pb-6 relative z-10 overflow-hidden">
+    <section className="w-full min-h-screen lg:h-screen flex flex-col items-center justify-center px-4 py-8 lg:py-0 relative z-10 overflow-hidden">
       <div className="w-full max-w-7xl flex flex-col items-center">
         <div className="mb-2 md:mb-4 relative text-center">
           <motion.h2
@@ -729,7 +787,7 @@ const Projects: React.FC = () => {
 
                     {/* Content Section */}
                     < motion.div
-                      className="lg:w-5/12 p-6 md:p-8 lg:p-12 overflow-y-auto custom-scrollbar flex flex-col relative bg-[#0f0518]"
+                      className="lg:w-5/12 p-6 md:p-8 lg:p-12 lg:overflow-y-auto overflow-y-visible custom-scrollbar flex flex-col relative bg-[#0f0518]"
                       variants={containerVariants}
                       initial="hidden"
                       animate="visible"

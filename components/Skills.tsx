@@ -84,7 +84,7 @@ const Skills: React.FC = () => {
     const activeStep = pipelineSteps[activeStepIndex];
 
     return (
-        <section className="w-full flex flex-col items-center justify-center px-4 pt-20 pb-8 lg:pt-24 lg:pb-10 relative z-10 overflow-x-hidden">
+        <section className="w-full min-h-screen lg:h-screen flex flex-col items-center justify-center px-4 py-8 lg:py-0 relative z-10 overflow-hidden">
             {/* Background Tech Grid */}
             <div className="absolute inset-0 z-0 opacity-10"
                 style={{ backgroundImage: 'linear-gradient(#7c3aed 1px, transparent 1px), linear-gradient(90deg, #7c3aed 1px, transparent 1px)', backgroundSize: '50px 50px' }}>

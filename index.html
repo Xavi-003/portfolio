@@ -74,6 +74,14 @@
       overflow-x: hidden;
     }
 
+    /* Hide scrollbar and prevent body scroll on desktop (web) */
+    @media (min-width: 1024px) {
+      html, body {
+        overflow: hidden !important;
+        height: 100vh;
+      }
+    }
+
     /* Custom Scrollbar */
     ::-webkit-scrollbar {
       width: 6px;

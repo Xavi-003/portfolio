@@ -52,10 +52,12 @@ export const sendMessageToGemini = async (
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,
       },
-      history: history.map(h => ({
-        role: h.role,
-        parts: [{ text: h.text }]
-      }))
+      history: history
+        .filter((h, idx) => !(idx === 0 && h.role === 'model'))
+        .map(h => ({
+          role: h.role,
+          parts: [{ text: h.text }]
+        }))
     });
 
     const result: GenerateContentResponse = await chat.sendMessage({

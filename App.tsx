@@ -2,6 +2,7 @@ import React, { useState, useEffect, Suspense, lazy } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ViewState } from "./types";
 import MorphingBackground from "./components/MorphingBackground";
+import ParticlesBackground from "./components/ParticlesBackground";
 import Navigation from "./components/Navigation";
 import Hero from "./components/Hero";
 
@@ -31,7 +32,7 @@ function App() {
     if (!loading) {
       const timer = setTimeout(() => {
         setLoadExtras(true);
-      }, 1500);
+      }, 300);
       return () => clearTimeout(timer);
     }
   }, [loading]);
@@ -43,7 +44,7 @@ function App() {
       </AnimatePresence>
 
       {!loading && (
-        <div className="relative w-full min-h-screen overflow-x-hidden overflow-y-auto font-sans text-white selection:bg-neon-violet selection:text-white">
+        <div className="relative w-full min-h-screen overflow-x-hidden lg:overflow-y-hidden overflow-y-auto font-sans text-white selection:bg-neon-violet selection:text-white">
           {loadExtras && (
             <Suspense fallback={null}>
               <CustomCursor />
@@ -51,7 +52,8 @@ function App() {
             </Suspense>
           )}
 
-          {/* The Background Visual */}
+          {/* The Background Visuals */}
+          <ParticlesBackground />
           <MorphingBackground view={view} />
 
           {/* Main Content Swapper */}
