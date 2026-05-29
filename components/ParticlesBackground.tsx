@@ -59,7 +59,16 @@ const ParticlesBackground: React.FC = () => {
     const updateSize = () => {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
-      initParticles();
+      
+      if (particles.length === 0) {
+        initParticles();
+      } else {
+        // Reposition out of bound particles to fit the new viewport layout
+        particles.forEach(p => {
+          if (p.x > width + 40) p.x = Math.random() * width;
+          if (p.y > height + 40) p.y = Math.random() * height;
+        });
+      }
     };
 
     const initParticles = () => {

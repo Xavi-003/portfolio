@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Bot, User, Sparkles, Loader2, Zap } from 'lucide-react';
+import { Send, Bot, User, Sparkles, Loader2, Zap, Key } from 'lucide-react';
 import { Message } from '../types';
 import { sendMessageToGemini } from '../services/geminiService';
 
@@ -10,7 +10,21 @@ const AIChat: React.FC = () => {
     ]);
     const [input, setInput] = useState('');
     const [isTyping, setIsTyping] = useState(false);
+    const [showKeyInput, setShowKeyInput] = useState(false);
+    const [apiKey, setApiKey] = useState(() => localStorage.getItem('user_gemini_api_key') || '');
     const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    const handleSaveKey = (keyVal: string) => {
+        const trimmed = keyVal.trim();
+        if (trimmed) {
+            localStorage.setItem('user_gemini_api_key', trimmed);
+            setApiKey(trimmed);
+        } else {
+            localStorage.removeItem('user_gemini_api_key');
+            setApiKey('');
+        }
+        setShowKeyInput(false);
+    };
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -57,10 +71,51 @@ const AIChat: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="p-2 rounded-full bg-white/5 border border-white/10">
-                        <Zap className="text-yellow-400 w-4 h-4 fill-yellow-400" />
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => setShowKeyInput(!showKeyInput)}
+                            aria-label="Set Gemini API Key"
+                            className={`p-2 rounded-full border transition-all duration-300 cursor-pointer ${apiKey ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-white/5 border-white/10 text-gray-400 hover:text-white'}`}
+                        >
+                            <Key size={16} />
+                        </button>
+                        <div className="p-2 rounded-full bg-white/5 border border-white/10">
+                            <Zap className="text-yellow-400 w-4 h-4 fill-yellow-400" />
+                        </div>
                     </div>
                 </div>
+
+                {/* API Key Panel */}
+                <AnimatePresence>
+                    {showKeyInput && (
+                        <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="bg-[#0e041c] border-b border-white/10 p-4 overflow-hidden flex flex-col gap-2 shrink-0 text-left"
+                        >
+                            <div className="text-[10px] text-gray-400 font-mono">
+                                Provide an optional Gemini API Key (saved locally in your browser) to run Antony's chatbot under your own API quota:
+                            </div>
+                            <div className="flex gap-2">
+                                <input
+                                    type="password"
+                                    placeholder="Enter Gemini API Key..."
+                                    value={apiKey}
+                                    onChange={(e) => setApiKey(e.target.value)}
+                                    className="flex-1 bg-white/5 border border-white/15 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-neon-violet text-white placeholder-gray-600"
+                                />
+                                <button
+                                    onClick={() => handleSaveKey(apiKey)}
+                                    className="bg-white text-black text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-neon-violet hover:text-white transition-colors cursor-pointer"
+                                >
+                                    Save
+                                </button>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
                 {/* Chat Area */}
                 <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 sm:space-y-8 bg-black/20 custom-scrollbar">

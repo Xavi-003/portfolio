@@ -1,10 +1,3 @@
-import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
-
-// Initialize the AI client
-// Note: In a real production app, ensure this is handled via a backend proxy to hide keys if not using the secure user-provided flow.
-// For this demo portfolio, we assume the env var is present as per instructions.
-const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY || '' });
-
 const SYSTEM_INSTRUCTION = `
 You are "MorphBot", the intelligent assistant for the portfolio of Antony Xavier.
 
@@ -32,42 +25,67 @@ If asked about topics outside of Antony's professional resume, politely redirect
 If asked how to contact him, provide the email or phone number.
 `;
 
+export const getGeminiApiKey = (): string => {
+  return localStorage.getItem('user_gemini_api_key') || import.meta.env.VITE_GEMINI_API_KEY || '';
+};
+
 export const sendMessageToGemini = async (
   history: { role: 'user' | 'model'; text: string }[],
   newMessage: string
 ): Promise<string> => {
   try {
-    if (!import.meta.env.VITE_GEMINI_API_KEY) {
-      return "I'm currently in offline mode (API Key missing). But I can tell you Antony Xavier is great!";
+    const apiKey = getGeminiApiKey();
+    if (!apiKey) {
+      return "I'm currently in offline mode (API Key missing). Please click the key icon in the top right of this chat box to provide an API key, or try again later.";
     }
 
     const model = 'gemini-2.5-flash';
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
-    // Convert history to chat format expected by SDK if needed, 
-    // but for a simple generateContent call with context, we can just construct the prompt 
-    // or use the chat API. Let's use the Chat API for better context management.
-
-    const chat = ai.chats.create({
-      model: model,
-      config: {
-        systemInstruction: SYSTEM_INSTRUCTION,
-      },
-      history: history
+    const formattedContents = [
+      ...history
         .filter((h, idx) => !(idx === 0 && h.role === 'model'))
         .map(h => ({
           role: h.role,
           parts: [{ text: h.text }]
-        }))
+        })),
+      {
+        role: 'user',
+        parts: [{ text: newMessage }]
+      }
+    ];
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: formattedContents,
+        systemInstruction: {
+          parts: [{ text: SYSTEM_INSTRUCTION }]
+        }
+      })
     });
 
-    const result: GenerateContentResponse = await chat.sendMessage({
-      message: newMessage
-    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error("Gemini REST API Error response:", errorData);
+      
+      if (response.status === 400 || response.status === 403) {
+        return "The request failed. This usually indicates an invalid API key. Click the key icon in the top right to verify or update your key.";
+      }
+      return `API Connection Error (${response.status}). Please try again later.`;
+    }
 
-    return result.text || "I received your message but couldn't generate a text response.";
+    const result = await response.json();
+    const responseText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    return responseText || "I received your message but couldn't generate a text response.";
 
   } catch (error) {
     console.error("Gemini API Error:", error);
-    return "I seem to be having trouble connecting to the neural network. Please try again later.";
+    return "I seem to be having trouble connecting to the neural network. Please check your internet connection and try again.";
   }
 };
+

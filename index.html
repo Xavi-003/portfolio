@@ -100,8 +100,8 @@
       overflow-x: hidden;
     }
 
-    /* Hide scrollbar and prevent body scroll on desktop (web) */
-    @media (min-width: 1024px) {
+    /* Prevent body scroll on desktop (web) only when vertical height is sufficient */
+    @media (min-width: 1024px) and (min-height: 700px) {
       html, body {
         overflow: hidden !important;
         height: 100vh;
@@ -134,20 +134,6 @@
       background: rgba(10, 0, 21, 0.6);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(139, 92, 246, 0.15);
-    }
-
-    /* Hide default cursor on desktop to allow custom cursor */
-    @media (min-width: 1024px) {
-
-      body,
-      a,
-      button,
-      input,
-      select,
-      textarea,
-      [role="button"] {
-        cursor: none !important;
-      }
     }
   </style>
 </head>

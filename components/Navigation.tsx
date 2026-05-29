@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Home, Briefcase, Cpu, Mail, MessageSquare } from 'lucide-react';
 import { ViewState } from '../types';
 import { motion } from 'framer-motion';
@@ -16,6 +16,32 @@ const navItems = [
 ];
 
 const Navigation: React.FC<NavigationProps> = ({ currentView, onChangeView }) => {
+  const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
+    let newIndex = index;
+    switch (e.key) {
+      case 'ArrowRight':
+        newIndex = (index + 1) % navItems.length;
+        break;
+      case 'ArrowLeft':
+        newIndex = (index - 1 + navItems.length) % navItems.length;
+        break;
+      case 'Home':
+        newIndex = 0;
+        break;
+      case 'End':
+        newIndex = navItems.length - 1;
+        break;
+      default:
+        return;
+    }
+
+    e.preventDefault();
+    buttonRefs.current[newIndex]?.focus();
+    onChangeView(navItems[newIndex].id as ViewState);
+  };
+
   return (
     <nav aria-label="Main Navigation" className="fixed bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 z-[100]">
       <motion.div
@@ -25,14 +51,17 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, onChangeView }) =>
         className="flex items-center gap-2 p-1.5 rounded-full bg-neon-dark/50 backdrop-blur-md border border-white/10 shadow-[0_0_15px_rgba(124,58,237,0.15)] hover:border-neon-violet/40 hover:shadow-[0_0_20px_rgba(124,58,237,0.3)] transition-all duration-300"
         role="tablist"
       >
-        {navItems.map((item) => {
+        {navItems.map((item, index) => {
           const isActive = currentView === item.id;
           const Icon = item.icon;
 
           return (
             <button
               key={item.id}
+              ref={(el) => { buttonRefs.current[index] = el; }}
               onClick={() => onChangeView(item.id as ViewState)}
+              onKeyDown={(e) => handleKeyDown(e, index)}
+              tabIndex={isActive ? 0 : -1}
               aria-label={`Navigate to ${item.label} section`}
               aria-selected={isActive}
               role="tab"

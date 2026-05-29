@@ -99,8 +99,7 @@ export default defineConfig(({ mode }) => {
             "react-vendor": ["react", "react-dom"],
             framer: ["framer-motion"],
             icons: ["lucide-react"],
-            charts: ["recharts"],
-            "ai-sdk": ["@google/genai"],
+            charts: ["recharts"]
           },
         },
       },

@@ -166,7 +166,7 @@ const Skills: React.FC = () => {
                                         </div>
 
                                         {/* Active State Indicator */}
-                                        <div className="mt-auto h-1 w-full rounded-full overflow-hidden bg-white/5 ${isActive ? 'opacity-100' : 'opacity-0'}">
+                                        <div className={`mt-auto h-1 w-full rounded-full overflow-hidden bg-white/5 ${isActive ? 'opacity-100' : 'opacity-0'}`}>
                                             <motion.div
                                                 className={`h-full ${step.bgColor}`}
                                                 initial={{ width: 0 }}

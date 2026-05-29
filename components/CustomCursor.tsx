@@ -9,6 +9,10 @@ const CustomCursor: React.FC = () => {
   const [isHovering, setIsHovering] = useState(false);
   const [hoveredTag, setHoveredTag] = useState<string>('');
 
+  const isVisibleRef = useRef(false);
+  const isHoveringRef = useRef(false);
+  const hoveredTagRef = useRef('');
+
   const isTouchDevice = useRef(
     typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches
   );
@@ -16,26 +20,24 @@ const CustomCursor: React.FC = () => {
   useEffect(() => {
     if (isTouchDevice.current) return;
 
-    let animationFrameId: number | null = null;
+    // Enable custom cursor styles dynamically on successful mount
+    document.documentElement.classList.add('custom-cursor-active');
 
     const moveMouse = (e: MouseEvent) => {
       if (e.clientX === 0 && e.clientY === 0) return;
 
-      if (animationFrameId !== null) {
-        cancelAnimationFrame(animationFrameId);
+      // Update coordinates directly in DOM without requestAnimationFrame to eliminate input latency
+      if (cursorRef.current) {
+        cursorRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate3d(-50%, -50%, 0)`;
       }
-
-      // Schedule write inside requestAnimationFrame to align with monitor refresh rate
-      animationFrameId = requestAnimationFrame(() => {
-        // Update coordinates directly in DOM to bypass React render cycle latency
-        if (cursorRef.current) {
-          cursorRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate3d(-50%, -50%, 0)`;
-        }
-        if (labelRef.current) {
-          labelRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate3d(20px, 20px, 0)`;
-        }
+      if (labelRef.current) {
+        labelRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate3d(20px, 20px, 0)`;
+      }
+      
+      if (!isVisibleRef.current) {
+        isVisibleRef.current = true;
         setIsVisible(true);
-      });
+      }
     };
 
     const mouseOver = (e: MouseEvent) => {
@@ -51,24 +53,30 @@ const CustomCursor: React.FC = () => {
         target.closest('button') !== null ||
         target.getAttribute('role') === 'button';
 
-      setIsHovering(isClickable);
+      if (isHoveringRef.current !== isClickable) {
+        isHoveringRef.current = isClickable;
+        setIsHovering(isClickable);
+      }
 
-      // Set tag label (infrequent state changes - only on boundary crosses)
-      if (tagName === 'a' || target.closest('a')) setHoveredTag('<Link />');
-      else if (tagName === 'button' || target.closest('button')) setHoveredTag('<Button />');
-      else if (tagName === 'input' || tagName === 'textarea') setHoveredTag('<Input />');
-      else if (tagName === 'img') setHoveredTag('<Img />');
-      else if (tagName === 'p' || tagName === 'span' || tagName.startsWith('h')) setHoveredTag(`<${tagName} />`);
-      else setHoveredTag('');
+      // Determine label tag on boundary changes
+      let tagLabel = '';
+      if (tagName === 'a' || target.closest('a')) tagLabel = '<Link />';
+      else if (tagName === 'button' || target.closest('button')) tagLabel = '<Button />';
+      else if (tagName === 'input' || tagName === 'textarea') tagLabel = '<Input />';
+      else if (tagName === 'img') tagLabel = '<Img />';
+      else if (tagName === 'p' || tagName === 'span' || tagName.startsWith('h')) tagLabel = `<${tagName} />`;
+
+      if (hoveredTagRef.current !== tagLabel) {
+        hoveredTagRef.current = tagLabel;
+        setHoveredTag(tagLabel);
+      }
     };
 
     document.addEventListener('mousemove', moveMouse, { passive: true });
     document.addEventListener('mouseover', mouseOver, { passive: true });
 
     return () => {
-      if (animationFrameId !== null) {
-        cancelAnimationFrame(animationFrameId);
-      }
+      document.documentElement.classList.remove('custom-cursor-active');
       document.removeEventListener('mousemove', moveMouse);
       document.removeEventListener('mouseover', mouseOver);
     };

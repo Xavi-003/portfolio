@@ -43,6 +43,19 @@
   initial-value: 50%;
 }
 
+/* Custom Cursor active class to hide native pointer */
+@media (min-width: 1024px) {
+  .custom-cursor-active,
+  .custom-cursor-active a,
+  .custom-cursor-active button,
+  .custom-cursor-active input,
+  .custom-cursor-active select,
+  .custom-cursor-active textarea,
+  .custom-cursor-active [role="button"] {
+    cursor: none !important;
+  }
+}
+
 /* Card border spotlight overlay */
 .project-card-border {
   position: relative;

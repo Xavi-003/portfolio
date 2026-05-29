@@ -526,12 +526,13 @@ const BotVisual = React.memo(() => {
         {[...Array(16)].map((_, i) => (
           <motion.div
             key={i}
-            className="w-full bg-cyan-500/30 rounded-t-sm"
+            className="w-full h-full bg-cyan-500/30 rounded-t-sm"
+            style={{ transformOrigin: "bottom", willChange: "transform" }}
             animate={{
-              height: [
-                `${Math.random() * 70 + 30}%`,
-                `${Math.random() * 70 + 30}%`,
-                `${Math.random() * 70 + 30}%`
+              scaleY: [
+                Math.random() * 0.7 + 0.3,
+                Math.random() * 0.7 + 0.3,
+                Math.random() * 0.7 + 0.3
               ]
             }}
             transition={{
@@ -674,6 +675,12 @@ const GameVisual = React.memo(() => {
   ]);
   const [score, setScore] = useState(0);
 
+  const obstaclesRef = useRef(obstacles);
+
+  useEffect(() => {
+    obstaclesRef.current = obstacles;
+  }, [obstacles]);
+
   useEffect(() => {
     const gameLoop = setInterval(() => {
       setObstacles(prev => {
@@ -689,7 +696,8 @@ const GameVisual = React.memo(() => {
       });
 
       setPlayerPosition(player => {
-        const danger = obstacles.find(obs => obs.y >= player.y - 2 && obs.y < player.y && obs.x === player.x);
+        const currentObstacles = obstaclesRef.current;
+        const danger = currentObstacles.find(obs => obs.y >= player.y - 2 && obs.y < player.y && obs.x === player.x);
         if (danger) {
           const newX = player.x > 0 ? player.x - 1 : player.x + 1;
           return { ...player, x: newX };
@@ -699,7 +707,7 @@ const GameVisual = React.memo(() => {
     }, 300);
 
     return () => clearInterval(gameLoop);
-  }, [obstacles]);
+  }, []);
 
   return (
     <div className="w-full h-full bg-[#0a0512] relative overflow-hidden flex flex-col p-2 items-center justify-between font-mono text-[8px] text-fuchsia-400 select-none">
