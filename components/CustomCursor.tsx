@@ -83,7 +83,7 @@ const CustomCursor: React.FC = () => {
       {/* Outer Cursor Wrapper - Positioned Directly via JS transforms */}
       <div
         ref={cursorRef}
-        className={`fixed top-0 left-0 w-6 h-6 pointer-events-none z-[9999] mix-blend-difference transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
+        className={`fixed top-0 left-0 w-6 h-6 pointer-events-none z-[9999] transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
         style={{
           willChange: 'transform',
           transform: 'translate3d(-100px, -100px, 0)',

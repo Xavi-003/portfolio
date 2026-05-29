@@ -972,7 +972,7 @@ const ProjectCard: React.FC<ProjectCardProps> = React.memo(({ project, onClick, 
 
         {/* Hover Radial Spotlight on GPU layer */}
         {isActive && (
-          <div className="absolute inset-0 pointer-events-none z-20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center overflow-hidden">
             <motion.div
               className="w-[400px] h-[400px] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.08)_0%,transparent_60%)] shrink-0"
               style={{
@@ -1011,7 +1011,7 @@ const ProjectCard: React.FC<ProjectCardProps> = React.memo(({ project, onClick, 
             <StaticPlaceholder id={project.id} />
           )}
 
-          <div className="absolute inset-0 bg-neon-violet/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 mix-blend-overlay" />
+          <div className="absolute inset-0 bg-neon-violet/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         </motion.div>
 
         {/* Card Info Section */}

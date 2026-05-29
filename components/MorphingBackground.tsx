@@ -57,7 +57,7 @@ const MorphingBackground: React.FC<MorphingBackgroundProps> = ({ view }) => {
           duration: 2,
           ease: [0.4, 0, 0.2, 1],
         }}
-        className="absolute w-[60vw] h-[60vw] bg-purple-900 rounded-[40%] blur-[90px] mix-blend-screen"
+        className="absolute w-[60vw] h-[60vw] bg-purple-900 rounded-[40%] blur-[90px]"
         style={{
           willChange: "transform, opacity",
           WebkitTransform: "translateZ(0)",
@@ -87,7 +87,7 @@ const MorphingBackground: React.FC<MorphingBackgroundProps> = ({ view }) => {
           opacity: view === "hero" ? 0.3 : 0.5,
         }}
         transition={{ duration: 2.5, ease: "easeInOut" }}
-        className="absolute w-[40vw] h-[40vw] bg-fuchsia-900/30 rounded-full blur-[120px] mix-blend-screen"
+        className="absolute w-[40vw] h-[40vw] bg-fuchsia-900/30 rounded-full blur-[120px]"
         style={{
           willChange: "transform, opacity",
           WebkitTransform: "translateZ(0)",
@@ -117,7 +117,7 @@ const MorphingBackground: React.FC<MorphingBackgroundProps> = ({ view }) => {
           opacity: view === "hero" ? 0.2 : 0.4,
         }}
         transition={{ duration: 3, ease: "easeInOut" }}
-        className="absolute w-[35vw] h-[35vw] bg-violet-800/25 rounded-full blur-[110px] mix-blend-screen"
+        className="absolute w-[35vw] h-[35vw] bg-violet-800/25 rounded-full blur-[110px]"
         style={{
           willChange: "transform, opacity",
           WebkitTransform: "translateZ(0)",

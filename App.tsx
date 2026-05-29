@@ -37,6 +37,54 @@ function App() {
     }
   }, [loading]);
 
+  // Dynamic Favicon Color Cycling
+  useEffect(() => {
+    const colors = [
+      '#ff0000', // Red
+      '#ff7f00', // Orange
+      '#ffff00', // Yellow
+      '#00ff00', // Green
+      '#0000ff', // Blue
+      '#4b0082', // Indigo
+      '#9400d3', // Violet
+      '#7c3aed',
+      '#e879f9',
+      '#fbbf24',
+      '#2dd4bf',
+      '#38bdf8',
+      '#22d3ee',
+      '#34d399',
+      '#fb7185'
+    ];
+    let colorIndex = 0;
+
+    const interval = setInterval(() => {
+      const favicon = document.getElementById('favicon') as HTMLLinkElement;
+      if (favicon) {
+        colorIndex = (colorIndex + 1) % colors.length;
+        const color = colors[colorIndex];
+        
+        // Generate SVG string with new stroke color (transparent fill)
+        const svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <path d="M 40 25 L 15 50 L 40 75" fill="none" stroke="${color}" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M 60 25 L 85 50 L 60 75" fill="none" stroke="${color}" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M 55 15 L 45 85" fill="none" stroke="${color}" stroke-width="14" stroke-linecap="round" />
+</svg>`;
+        
+        // Convert to data URI and update href
+        favicon.href = 'data:image/svg+xml;utf8,' + encodeURIComponent(svgString);
+        
+        // Update Theme Color for mobile browser UI
+        const themeMeta = document.querySelector('meta[name="theme-color"]');
+        if (themeMeta) {
+          themeMeta.setAttribute('content', color);
+        }
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <>
       <AnimatePresence>
