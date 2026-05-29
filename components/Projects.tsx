@@ -227,7 +227,6 @@ const useCandleData = () => {
 };
 
 const TradingChartVisual = React.memo(() => {
-  const candles = useCandleData();
   const [price, setPrice] = useState(64231.45);
   const [percentChange, setPercentChange] = useState(2.45);
   const [trades, setTrades] = useState([
@@ -308,26 +307,30 @@ const TradingChartVisual = React.memo(() => {
           
           {/* Asks (Reds) */}
           <div className="flex flex-col gap-0.5">
-            {[64245, 64238, 64234].map((p, idx) => (
+            {[64245, 64238, 64234].map((p, idx) => {
+              const pseudoRand = ((price * 100 * (idx + 1)) % 100) / 100;
+              return (
               <div key={idx} className="flex justify-between text-[7px] text-rose-400 relative overflow-hidden">
                 <span className="z-10">{p}</span>
-                <span className="z-10 text-gray-500">{(Math.random() * 0.4 + 0.05).toFixed(3)}</span>
-                <div className="absolute right-0 top-0 bottom-0 bg-rose-500/10 z-0" style={{ width: `${Math.random() * 60 + 10}%` }} />
+                <span className="z-10 text-gray-500">{(pseudoRand * 0.4 + 0.05).toFixed(3)}</span>
+                <div className="absolute right-0 top-0 bottom-0 bg-rose-500/10 z-0" style={{ width: `${pseudoRand * 60 + 10}%` }} />
               </div>
-            ))}
+            )})}
           </div>
 
           <div className="h-[1px] bg-white/5 my-0.5" />
 
           {/* Bids (Greens) */}
           <div className="flex flex-col gap-0.5">
-            {[64228, 64222, 64215].map((p, idx) => (
+            {[64228, 64222, 64215].map((p, idx) => {
+              const pseudoRand = ((price * 100 * (idx + 4)) % 100) / 100;
+              return (
               <div key={idx} className="flex justify-between text-[7px] text-emerald-400 relative overflow-hidden">
                 <span className="z-10">{p}</span>
-                <span className="z-10 text-gray-500">{(Math.random() * 0.4 + 0.05).toFixed(3)}</span>
-                <div className="absolute right-0 top-0 bottom-0 bg-emerald-500/10 z-0" style={{ width: `${Math.random() * 60 + 10}%` }} />
+                <span className="z-10 text-gray-500">{(pseudoRand * 0.4 + 0.05).toFixed(3)}</span>
+                <div className="absolute right-0 top-0 bottom-0 bg-emerald-500/10 z-0" style={{ width: `${pseudoRand * 60 + 10}%` }} />
               </div>
-            ))}
+            )})}
           </div>
         </div>
       </div>

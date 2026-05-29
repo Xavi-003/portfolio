@@ -7,11 +7,10 @@ interface HeroProps {
   onNavigate: (view: ViewState) => void;
 }
 
-const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
+const TypingTitle: React.FC = () => {
   const [text, setText] = useState('');
   const fullText = "Architecting The Future";
-  const [isTyping, setIsTyping] = useState(true);
-
+  
   const getCharGradient = (index: number) => {
     const gradients = [
       'from-cyan-400 to-blue-500',
@@ -33,11 +32,63 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
       i++;
       if (i === fullText.length) {
         clearInterval(timer);
-        setIsTyping(false);
       }
     }, 70);
     return () => clearInterval(timer);
   }, []);
+
+  return (
+    <div className="min-h-[120px] sm:min-h-[160px] md:min-h-[256px] mb-4 sm:mb-6 flex flex-col justify-center items-center px-2">
+      <h1 className="text-4xl sm:text-5xl md:text-8xl font-display font-bold leading-tight tracking-tighter flex flex-col justify-center items-center drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)] text-center">
+        {/* Line 1: Architecting */}
+        <div className="flex items-center justify-center flex-wrap">
+          {text.slice(0, 12).split('').map((char, index) => (
+            <span key={index} className={`bg-clip-text text-transparent bg-gradient-to-r ${getCharGradient(index)}`}>
+              {char}
+            </span>
+          ))}
+          {text.length <= 12 && (
+            <motion.span
+              aria-hidden="true"
+              animate={{ opacity: [1, 0] }}
+              transition={{
+                duration: 0.8,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "linear",
+              }}
+              className="inline-block w-1.5 h-8 md:w-3.5 md:h-16 bg-neon-purple ml-1 shadow-[0_0_12px_rgba(176,38,255,0.8)] align-middle shrink-0"
+            />
+          )}
+        </div>
+
+        {/* Line 2: The Future */}
+        {text.length > 12 && (
+          <div className="flex items-center justify-center flex-wrap mt-1 md:mt-3">
+            {text.slice(12).split('').map((char, index) => (
+              <span key={index} className={`bg-clip-text text-transparent bg-gradient-to-r ${getCharGradient(index + 12)}`}>
+                {char === ' ' ? '\u00A0' : char}
+              </span>
+            ))}
+            <motion.span
+              aria-hidden="true"
+              animate={{ opacity: [1, 0] }}
+              transition={{
+                duration: 0.8,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "linear",
+              }}
+              className="inline-block w-1.5 h-8 md:w-3.5 md:h-16 bg-neon-purple ml-1 shadow-[0_0_12px_rgba(176,38,255,0.8)] align-middle shrink-0"
+            />
+          </div>
+        )}
+      </h1>
+    </div>
+  );
+};
+
+const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
 
   return (
     <section className="h-screen w-full flex flex-col items-center justify-center text-center px-4 relative z-10 overflow-hidden">
@@ -101,53 +152,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
           </motion.div>
 
           {/* Main Title with Typing Effect */}
-          <div className="min-h-[120px] sm:min-h-[160px] md:min-h-[256px] mb-4 sm:mb-6 flex flex-col justify-center items-center px-2">
-            <h1 className="text-4xl sm:text-5xl md:text-8xl font-display font-bold leading-tight tracking-tighter flex flex-col justify-center items-center drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)] text-center">
-              {/* Line 1: Architecting */}
-              <div className="flex items-center justify-center flex-wrap">
-                {text.slice(0, 12).split('').map((char, index) => (
-                  <span key={index} className={`bg-clip-text text-transparent bg-gradient-to-r ${getCharGradient(index)}`}>
-                    {char}
-                  </span>
-                ))}
-                {text.length <= 12 && (
-                  <motion.span
-                    aria-hidden="true"
-                    animate={{ opacity: [1, 0] }}
-                    transition={{
-                      duration: 0.8,
-                      repeat: Infinity,
-                      repeatType: "reverse",
-                      ease: "linear",
-                    }}
-                    className="inline-block w-1.5 h-8 md:w-3.5 md:h-16 bg-neon-purple ml-1 shadow-[0_0_12px_rgba(176,38,255,0.8)] align-middle shrink-0"
-                  />
-                )}
-              </div>
-
-              {/* Line 2: The Future */}
-              {text.length > 12 && (
-                <div className="flex items-center justify-center flex-wrap mt-1 md:mt-3">
-                  {text.slice(12).split('').map((char, index) => (
-                    <span key={index} className={`bg-clip-text text-transparent bg-gradient-to-r ${getCharGradient(index + 12)}`}>
-                      {char === ' ' ? '\u00A0' : char}
-                    </span>
-                  ))}
-                  <motion.span
-                    aria-hidden="true"
-                    animate={{ opacity: [1, 0] }}
-                    transition={{
-                      duration: 0.8,
-                      repeat: Infinity,
-                      repeatType: "reverse",
-                      ease: "linear",
-                    }}
-                    className="inline-block w-1.5 h-8 md:w-3.5 md:h-16 bg-neon-purple ml-1 shadow-[0_0_12px_rgba(176,38,255,0.8)] align-middle shrink-0"
-                  />
-                </div>
-              )}
-            </h1>
-          </div>
+          <TypingTitle />
 
           <motion.p
             className="text-sm sm:text-lg md:text-xl text-indigo-100 max-w-2xl mx-auto mb-6 sm:mb-10 leading-relaxed drop-shadow-md font-medium px-4"
