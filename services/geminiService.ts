@@ -1,91 +1,178 @@
-const SYSTEM_INSTRUCTION = `
-You are "MorphBot", the intelligent assistant for the portfolio of Antony Xavier.
+/**
+ * Gemini API Service
+ * ⚠️ SECURITY WARNING: API calls should go through a server-side proxy!
+ * This file shows the client-side implementation.
+ * 
+ * RECOMMENDED: Use a backend endpoint that proxies Gemini API calls
+ * to keep your API key secure (never expose in frontend code).
+ */
 
-Key details about Antony Xavier:
-- Title: Senior Web Developer 
-- Experience: Over 3.5 years of delivering production-grade fintech solutions.
-- Current Role: Senior Web Developer at HEPTA7 TECHNOLOGIES LLP (2025 - Present)
-  - Architecting high-frequency Trading Bots (Grid, DCA, Arbitrage).
-  - Leading API integrations for Binance, Bybit, and MT5 via WebSockets.
-  - Designing secure DeFi Crypto Wallets and microservices.
-  - Optimizing Node.js clusters for sub-millisecond, low-latency execution.
-- Previous Role: Web Developer at WeAlwin Technologies (2021 - 2025)
-  - Built scalable fintech apps using React, Node.js, and MongoDB.
-- Education: B.Tech in Computer Science, AAA College of Engineering and Technology (Class of 2019)
-- Tech Stack:
-  - Backend: Node.js, Express, gRPC, MongoDB, Redis
-  - Frontend: React, JavaScript, HTML5/CSS3, Tailwind
-  - Fintech/Trading: Arbitrage, Grid/DCA, MT5 API, Binance, Wallets
-- Profile: "Architecting the future of fintech through scalable code and automated precision."
-- Contact: Email at xavier.developer03@gmail.com, Phone at (+91) 7904077910, GitHub at github.com/xavi-003, LinkedIn at linkedin.com/in/antony-xavier
+import { apiClient } from './apiClient';
+import type { Message, GeminiRequest, GeminiGenerateResponse, ApiError } from '@/types';
+import { TIMING, ERROR_MESSAGES } from '@/utils/constants';
 
-Your primary goal is to answer visitor questions accurately based ONLY on this context. 
-Keep answers concise, professional, yet slightly witty and tech-savvy.
-If asked about topics outside of Antony's professional resume, politely redirect back to his qualifications.
-If asked how to contact him, provide the email or phone number.
-`;
+interface SendMessageOptions {
+  temperature?: number;
+  maxTokens?: number;
+  onError?: (error: ApiError) => void;
+}
 
-export const getGeminiApiKey = (): string => {
-  return localStorage.getItem('user_gemini_api_key') || import.meta.env.VITE_GEMINI_API_KEY || '';
-};
+/**
+ * Convert application messages to Gemini format
+ */
+function convertToGeminiMessages(messages: Message[]): Array<{
+  role: 'user' | 'model';
+  parts: Array<{ text: string }>;
+}> {
+  return messages.map(msg => ({
+    role: msg.role === 'user' ? 'user' : 'model',
+    parts: [{ text: msg.text }],
+  }));
+}
 
-export const sendMessageToGemini = async (
-  history: { role: 'user' | 'model'; text: string }[],
-  newMessage: string
-): Promise<string> => {
+/**
+ * Send message to Gemini API via server proxy
+ * 
+ * IMPORTANT: This assumes you have a backend endpoint at /api/chat
+ * that handles the Gemini API call securely.
+ */
+export async function sendMessageToGemini(
+  messages: Message[],
+  userMessage: string,
+  options: SendMessageOptions = {}
+): Promise<string> {
+  const { temperature = 0.7, maxTokens = 1024, onError } = options;
+
   try {
-    const apiKey = getGeminiApiKey();
-    if (!apiKey) {
-      return "I'm currently in offline mode (API Key missing). Please click the key icon in the top right of this chat box to provide an API key, or try again later.";
+    // Call YOUR backend endpoint instead of Gemini directly
+    const response = await apiClient.post<{ response: string }>(
+      '/api/chat', // This should be YOUR backend proxy endpoint
+      {
+        messages: convertToGeminiMessages([...messages, {
+          role: 'user',
+          text: userMessage,
+          timestamp: Date.now(),
+        }]),
+        generationConfig: {
+          temperature,
+          maxOutputTokens: maxTokens,
+        },
+      },
+      { timeout: TIMING.API_CALL_TIMEOUT_MS }
+    );
+
+    if (!response.success || !response.data) {
+      const error = response.error || {
+        message: ERROR_MESSAGES.NO_RESPONSE,
+        code: 'NO_RESPONSE',
+        status: 500,
+        timestamp: Date.now(),
+      };
+      onError?.(error);
+      throw error;
     }
 
-    const model = 'gemini-2.5-flash';
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+    return response.data.response;
+  } catch (error) {
+    const apiError = error as ApiError;
+    console.error('Gemini API error:', apiError);
+    onError?.(apiError);
+    throw apiError;
+  }
+}
 
-    const formattedContents = [
-      ...history
-        .filter((h, idx) => !(idx === 0 && h.role === 'model'))
-        .map(h => ({
-          role: h.role,
-          parts: [{ text: h.text }]
-        })),
-      {
-        role: 'user',
-        parts: [{ text: newMessage }]
-      }
-    ];
+/**
+ * Stream response from Gemini (for real-time chat)
+ * Requires Server-Sent Events support
+ */
+export async function* streamGeminiResponse(
+  messages: Message[],
+  userMessage: string,
+  options: SendMessageOptions = {}
+): AsyncGenerator<string, void, unknown> {
+  const { temperature = 0.7, maxTokens = 1024 } = options;
 
-    const response = await fetch(url, {
+  try {
+    const response = await fetch('/api/chat/stream', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        contents: formattedContents,
-        systemInstruction: {
-          parts: [{ text: SYSTEM_INSTRUCTION }]
-        }
-      })
+        messages: convertToGeminiMessages([...messages, {
+          role: 'user',
+          text: userMessage,
+          timestamp: Date.now(),
+        }]),
+        generationConfig: {
+          temperature,
+          maxOutputTokens: maxTokens,
+        },
+      }),
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      console.error("Gemini REST API Error response:", errorData);
-      
-      if (response.status === 400 || response.status === 403) {
-        return "The request failed. This usually indicates an invalid API key. Click the key icon in the top right to verify or update your key.";
-      }
-      return `API Connection Error (${response.status}). Please try again later.`;
+      throw new Error(`HTTP ${response.status}`);
     }
 
-    const result = await response.json();
-    const responseText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+    const reader = response.body?.getReader();
+    if (!reader) throw new Error('No response body');
 
-    return responseText || "I received your message but couldn't generate a text response.";
+    const decoder = new TextDecoder();
+    let buffer = '';
 
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+
+      for (let i = 0; i < lines.length - 1; i++) {
+        const line = lines[i].trim();
+        if (line.startsWith('data: ')) {
+          try {
+            const data = JSON.parse(line.slice(6));
+            if (data.text) {
+              yield data.text;
+            }
+          } catch (e) {
+            // Parse error, continue
+          }
+        }
+      }
+
+      buffer = lines[lines.length - 1];
+    }
   } catch (error) {
-    console.error("Gemini API Error:", error);
-    return "I seem to be having trouble connecting to the neural network. Please check your internet connection and try again.";
+    console.error('Stream error:', error);
+    throw error;
   }
-};
+}
 
+/**
+ * Example of how to implement the backend proxy:
+ * 
+ * // server/api.ts (Node.js/Express)
+ * import { GoogleGenerativeAI } from '@google/generative-ai';
+ * 
+ * const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+ * 
+ * app.post('/api/chat', async (req, res) => {
+ *   try {
+ *     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-pro' });
+ *     const result = await model.generateContent({
+ *       contents: req.body.messages,
+ *       generationConfig: req.body.generationConfig,
+ *     });
+ *     
+ *     const responseText = result.response.text();
+ *     res.json({ response: responseText });
+ *   } catch (error) {
+ *     res.status(500).json({ 
+ *       message: 'API error',
+ *       error: error.message 
+ *     });
+ *   }
+ * });
+ */
+
+export default { sendMessageToGemini, streamGeminiResponse };
